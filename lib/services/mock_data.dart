@@ -526,6 +526,246 @@ class MockDataService {
         'correct_answer_index': 1,
         'hint': 'Semua orang yang berminat mengembangkan pemahamannya.',
         'explanation': 'Literasi mengenai $capitalizedTopic sangat berguna bagi pelajar maupun profesional modern agar tetap relevan di era perkembangan yang cepat.'
+      },
+      {
+        'question': 'Bagaimana cara mengevaluasi tingkat keberhasilan atau efektivitas dari penerapan $capitalizedTopic?',
+        'options': [
+          'Hanya berdasarkan intuisi tanpa data pendukung',
+          'Melakukan pengukuran parameter performa, audit sistem, dan analisis feedback secara berkala',
+          'Membandingkannya dengan topik akademis yang tidak relevan',
+          'Menghentikan seluruh operasional untuk melihat dampaknya'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Evaluasi membutuhkan data terukur, audit, dan feedback.',
+        'explanation': 'Keberhasilan implementasi $capitalizedTopic diukur secara objektif melalui indikator performa utama (KPI) serta umpan balik berkala.'
+      },
+      {
+        'question': 'Dalam memecahkan masalah kompleks menggunakan $capitalizedTopic, langkah pertama yang wajib dilakukan adalah...',
+        'options': [
+          'Mencari solusi instan di internet tanpa analisis',
+          'Menganalisis akar permasalahan, mengumpulkan data awal, dan menetapkan batasan masalah',
+          'Menyalahkan kegagalan sistem sebelumnya',
+          'Mengabaikan detail kecil dan langsung membuat kesimpulan'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Analisis akar masalah dan pengumpulan data adalah langkah awal yang krusial.',
+        'explanation': 'Sebelum menerapkan solusi berbasis $capitalizedTopic, penting untuk memahami masalah secara mendalam dengan mengidentifikasi akar penyebabnya.'
+      },
+      {
+        'question': 'Di era digital saat ini, faktor manakah yang paling mempercepat evolusi dari $capitalizedTopic?',
+        'options': [
+          'Penurunan minat masyarakat terhadap teknologi',
+          'Ketersediaan data besar (Big Data), komputasi awan, dan adopsi kecerdasan buatan (AI)',
+          'Penggunaan metode pencatatan manual di atas kertas',
+          'Pembatasan akses informasi secara global'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Pikirkan tentang teknologi modern seperti AI, Big Data, dan cloud.',
+        'explanation': 'Kemajuan teknologi komputasi, akses informasi yang cepat, serta AI secara dramatis mempercepat perkembangan dan penerapan $capitalizedTopic.'
+      },
+      {
+        'question': 'Mengapa penting untuk terus memperbarui pengetahuan kita mengenai standar terbaru dalam $capitalizedTopic?',
+        'options': [
+          'Hanya untuk sekadar formalitas sertifikat saja',
+          'Agar tetap relevan, aman, dan mampu menerapkan praktik terbaik (best practices) yang efisien',
+          'Karena standar lama otomatis merusak perangkat keras',
+          'Untuk membingungkan rekan kerja lainnya'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Agar relevan, aman, dan efisien.',
+        'explanation': 'Industri yang melibatkan $capitalizedTopic terus berkembang; mengikuti standar terbaru menjamin keamanan dan optimalitas sistem.'
+      },
+      {
+        'question': 'Bagaimanakah keterkaitan erat antara konsep $capitalizedTopic dengan peningkatan efisiensi kerja?',
+        'options': [
+          'Tidak ada kaitan sama sekali karena keduanya berjalan terpisah',
+          'Penerapan prinsip terstruktur mengurangi redundansi proses dan mengoptimalkan sumber daya',
+          'Dengan menambah beban kerja manual bagi semua anggota tim',
+          'Dengan memperpanjang birokrasi pengambilan keputusan'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Mengurangi redundansi dan mengoptimalkan sumber daya.',
+        'explanation': 'Prinsip-prinsip dalam $capitalizedTopic berfokus pada efisiensi proses, pengurangan pemborosan waktu, dan pemanfaatan aset secara maksimal.'
+      },
+      {
+        'question': 'Dalam merancang sebuah strategi yang melibatkan $capitalizedTopic, aspek utama apa yang harus diprioritaskan?',
+        'options': [
+          'Tampilan visual tanpa memperhatikan fungsi dasarnya',
+          'Keselarasan dengan tujuan jangka panjang, skalabilitas, dan pengelolaan risiko',
+          'Biaya termurah tanpa memikirkan kualitas',
+          'Opini subjektif dari satu pihak saja'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Skalabilitas, keselarasan jangka panjang, dan manajemen risiko.',
+        'explanation': 'Desain strategi $capitalizedTopic yang solid harus berorientasi pada masa depan (skalabel) dan memperhitungkan mitigasi risiko.'
+      },
+      {
+        'question': 'Salah satu kesalahan umum yang sering diabaikan saat mempelajari $capitalizedTopic adalah...',
+        'options': [
+          'Belajar terlalu detail dan melakukan banyak latihan praktis',
+          'Mengabaikan pemahaman konsep teoritis fundamental dan langsung melompat ke praktik tingkat lanjut',
+          'Mengikuti tutorial dari dokumentasi resmi',
+          'Berdiskusi dengan para ahli di bidangnya'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Melewatkan konsep dasar demi hasil instan.',
+        'explanation': 'Tanpa fondasi teori dasar yang kuat pada $capitalizedTopic, praktisi akan kesulitan memecahkan masalah kompleks yang tidak tercakup dalam tutorial standar.'
+      },
+      {
+        'question': 'Bagaimana pengaruh langsung dari $capitalizedTopic terhadap pengambilan keputusan strategis di industri?',
+        'options': [
+          'Membuat keputusan menjadi lebih lambat dan tidak terarah',
+          'Menyediakan data analitis, prediksi tren, dan kerangka kerja logis untuk meminimalkan spekulasi',
+          'Menghapus wewenang pimpinan perusahaan',
+          'Mewajibkan semua keputusan diambil oleh kecerdasan buatan sepenuhnya'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Menyediakan analisis data dan prediksi tren untuk meminimalkan tebakan.',
+        'explanation': 'Implementasi $capitalizedTopic memberikan landasan berbasis data (data-driven) yang kuat sehingga keputusan bisnis lebih akurat dan terukur.'
+      },
+      {
+        'question': 'Manakah dari karakteristik berikut yang paling mendefinisikan kualitas terbaik dalam ekosistem $capitalizedTopic?',
+        'options': [
+          'Sifatnya yang tertutup dan tidak menerima masukan baru',
+          'Fleksibilitas terhadap perubahan, keamanan yang kokoh, dan interoperabilitas tinggi',
+          'Ketergantungan penuh pada satu vendor saja',
+          'Kompleksitas tinggi yang sulit dipahami oleh siapa pun'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Fleksibel, aman, dan mudah terintegrasi.',
+        'explanation': 'Sistem $capitalizedTopic yang andal harus adaptif terhadap perkembangan teknologi baru serta menjamin keamanan data yang diolah.'
+      },
+      {
+        'question': 'Mengapa pemahaman etika dan regulasi menjadi penting dalam implementasi praktis $capitalizedTopic?',
+        'options': [
+          'Hanya untuk menghindari denda finansial semata',
+          'Untuk melindungi privasi pengguna, menjamin keadilan, dan menjaga kepercayaan publik',
+          'Karena etika membatasi kreativitas inovasi secara total',
+          'Untuk membuat proses implementasi menjadi rumit'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Melindungi privasi dan membangun kepercayaan publik.',
+        'explanation': 'Penerapan etika dan kepatuhan regulasi dalam $capitalizedTopic memastikan bahwa inovasi yang dihasilkan memberikan dampak positif tanpa merugikan hak-hak individu.'
+      },
+      {
+        'question': 'Bagaimana cara mengidentifikasi kegagalan awal dalam sebuah sistem yang menerapkan $capitalizedTopic?',
+        'options': [
+          'Menunggu sampai seluruh sistem mengalami kerusakan total',
+          'Melakukan pemantauan metrik (monitoring) secara real-time dan menganalisis log aktivitas',
+          'Mengasumsikan bahwa sistem selalu berjalan tanpa kesalahan',
+          'Menghapus semua file log untuk menyembunyikan masalah'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Pemantauan real-time dan analisis log aktivitas.',
+        'explanation': 'Deteksi dini kegagalan pada $capitalizedTopic bergantung pada sistem monitoring yang proaktif dan analisis log secara cermat.'
+      },
+      {
+        'question': 'Apa kontribusi paling signifikan dari $capitalizedTopic terhadap perkembangan ilmu pengetahuan modern?',
+        'options': [
+          'Menyediakan hiburan instan tanpa nilai edukasi',
+          'Menciptakan metodologi baru untuk memproses informasi dan memecahkan masalah secara terstruktur',
+          'Menggantikan seluruh teori fisika klasik secara total',
+          'Membatasi riset hanya pada satu lembaga riset saja'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Metodologi pemecahan masalah secara terstruktur.',
+        'explanation': 'Secara ilmiah, $capitalizedTopic memperkaya cara pandang peneliti dalam memodelkan masalah kompleks secara logis dan terukur.'
+      },
+      {
+        'question': 'Dalam mengoptimalkan performa $capitalizedTopic, parameter kunci manakah yang harus diukur secara berkala?',
+        'options': [
+          'Jumlah warna yang digunakan dalam diagram presentasi',
+          'Waktu respons, konsumsi sumber daya, throughput, dan tingkat akurasi keluaran',
+          'Opini dari pihak luar yang tidak menggunakan sistem',
+          'Merek perangkat keras yang digunakan oleh tim pengembang'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Responsivitas, pemakaian daya/sumber daya, throughput, akurasi.',
+        'explanation': 'Optimasi performa $capitalizedTopic membutuhkan data kuantitatif mengenai kecepatan proses, efisiensi resource, dan tingkat error.'
+      },
+      {
+        'question': 'Faktor eksternal manakah yang paling sering menghambat penyebaran pemahaman tentang $capitalizedTopic?',
+        'options': [
+          'Kurangnya materi gratis di internet',
+          'Kesenjangan infrastruktur teknologi dan kurangnya kurikulum pendidikan yang adaptif',
+          'Minat masyarakat yang terlalu tinggi untuk belajar',
+          'Biaya pembuatan akun media sosial'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Masalah infrastruktur dan kurikulum pendidikan.',
+        'explanation': 'Adopsi pemahaman $capitalizedTopic seringkali terhambat oleh akses teknologi yang tidak merata serta lambatnya pembaruan materi ajar di lembaga pendidikan.'
+      },
+      {
+        'question': 'Bagaimana pendekatan terbaik untuk mengajarkan konsep dasar $capitalizedTopic kepada orang awam?',
+        'options': [
+          'Menggunakan jargon-jargon teknis yang rumit sejak hari pertama',
+          'Menghubungkannya dengan analogi kehidupan sehari-hari dan memberikan contoh kasus sederhana',
+          'Meminta mereka menghafal formula matematika yang kompleks',
+          'Langsung memberikan tugas pemrograman tingkat lanjut'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Analogi sehari-hari dan contoh sederhana.',
+        'explanation': 'Pemahaman awal $capitalizedTopic lebih mudah terbentuk jika dikaitkan dengan pengalaman nyata yang sudah akrab dengan kehidupan sehari-hari.'
+      },
+      {
+        'question': 'Manakah di bawah ini yang merupakan mitos yang salah mengenai cara kerja $capitalizedTopic?',
+        'options': [
+          'Membutuhkan proses belajar yang berkelanjutan',
+          'Bahwa konsep ini dapat menyelesaikan semua masalah secara instan tanpa konfigurasi kustom',
+          'Membutuhkan pemikiran logis dan analisis data',
+          'Dapat diintegrasikan dengan teknologi modern'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Mitos seputar penyelesaian instan (silver bullet).',
+        'explanation': 'Tidak ada solusi tunggal (silver bullet). Penerapan $capitalizedTopic selalu menuntut penyesuaian (tuning) agar sesuai kebutuhan spesifik.'
+      },
+      {
+        'question': 'Bagaimanakah cara mengintegrasikan $capitalizedTopic dengan disiplin ilmu atau bidang kerja lainnya?',
+        'options': [
+          'Menolak kolaborasi lintas bidang dan fokus pada satu disiplin saja',
+          'Membangun antarmuka (interface) penghubung, menyelaraskan format data, dan berkolaborasi tim multidisiplin',
+          'Memaksa bidang lain mengikuti seluruh aturan teknis kita secara kaku',
+          'Menghentikan penggunaan teknologi di bidang lain tersebut'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Membangun interface, format data sama, kolaborasi tim.',
+        'explanation': 'Keberhasilan integrasi $capitalizedTopic dengan domain lain membutuhkan keluwesan komunikasi, standardisasi data, dan kerja sama tim lintas keahlian.'
+      },
+      {
+        'question': 'Dalam jangka panjang, bagaimana investasi waktu untuk mempelajari $capitalizedTopic memberikan hasil?',
+        'options': [
+          'Tidak memberikan hasil apa pun karena ilmu ini cepat usang',
+          'Meningkatkan daya saing profesional, membuka peluang karier baru, dan mempermudah inovasi mandiri',
+          'Menyebabkan kelelahan mental tanpa keuntungan finansial atau intelektual',
+          'Hanya berguna untuk lulus ujian sekolah saja'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Peluang karir, daya saing profesional, dan inovasi.',
+        'explanation': 'Menguasai $capitalizedTopic adalah investasi bernilai tinggi karena keterampilannya sangat dicari di era industri modern berbasis teknologi.'
+      },
+      {
+        'question': 'Fase kritis manakah dalam siklus hidup $capitalizedTopic yang membutuhkan perhatian paling mendalam?',
+        'options': [
+          'Fase perayaan peluncuran produk saja',
+          'Fase perencanaan awal, pengujian kualitas, serta pemeliharaan pasca-rilis',
+          'Saat memilih nama logo proyek',
+          'Saat mencetak dokumen laporan akhir'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Perencanaan awal, pengetesan kualitas, dan perawatan jangka panjang.',
+        'explanation': 'Kegagalan pada fase perencanaan atau pengabaian pada tahap pemeliharaan sistem $capitalizedTopic sering menjadi penyebab utama crash fatal di kemudian hari.'
+      },
+      {
+        'question': 'Apa kesimpulan utama yang dapat diambil setelah menganalisis tren perkembangan $capitalizedTopic tren saat ini?',
+        'options': [
+          'Perkembangannya telah stagnan dan tidak akan ada inovasi baru lagi',
+          'Penerapannya kian meluas, didorong oleh kolaborasi digital, dan menuntut adaptabilitas tinggi dari para praktisi',
+          'Hanya negara maju saja yang dapat memanfaatkannya',
+          'Semua teori lamanya terbukti salah secara keseluruhan'
+        ],
+        'correct_answer_index': 1,
+        'hint': 'Adopsi meluas dan perlunya adaptasi yang tinggi.',
+        'explanation': 'Tren menunjukkan $capitalizedTopic menjadi fondasi penting di berbagai sektor, menuntut kita untuk terus belajar dan beradaptasi dengan perubahan.'
       }
     ];
 
