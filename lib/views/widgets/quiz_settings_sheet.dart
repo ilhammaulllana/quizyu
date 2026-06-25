@@ -14,6 +14,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
   late String _focusArea;
   late int _questionCount;
   late String _difficulty;
+  bool _isCustom = false;
 
   @override
   void initState() {
@@ -22,6 +23,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
     _focusArea = settings.focusArea;
     _questionCount = settings.questionCount;
     _difficulty = settings.difficulty;
+    _isCustom = _questionCount != 5 && _questionCount != 10 && _questionCount != 20;
   }
 
   void _submit() {
@@ -130,48 +132,153 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
                 color: Color(0xFF64748B),
               ),
             ),
-            const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [5, 10, 15, 20].map((count) {
-                final isSelected = _questionCount == count;
-                return GestureDetector(
-                  onTap: () => setState(() => _questionCount = count),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 60,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: isSelected ? theme.primaryColor : const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected ? theme.primaryColor : const Color(0xFFE2E8F0),
-                        width: 1.5,
-                      ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: theme.primaryColor.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
+              children: [
+                ...[5, 10, 20].map((count) {
+                  final isSelected = !_isCustom && _questionCount == count;
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _questionCount = count;
+                            _isCustom = false;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: isSelected ? theme.primaryColor : const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected ? theme.primaryColor : const Color(0xFFE2E8F0),
+                              width: 1.5,
+                            ),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: theme.primaryColor.withValues(alpha: 0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '$count',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected ? Colors.white : const Color(0xFF64748B),
                               ),
-                            ]
-                          : null,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Center(
-                      child: Text(
-                        '$count',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: isSelected ? Colors.white : const Color(0xFF64748B),
+                  );
+                }),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isCustom = true;
+                          if (_questionCount == 5 || _questionCount == 10 || _questionCount == 20) {
+                            _questionCount = 15; // Set default custom value to 15
+                          }
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: _isCustom ? theme.primaryColor : const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _isCustom ? theme.primaryColor : const Color(0xFFE2E8F0),
+                            width: 1.5,
+                          ),
+                          boxShadow: _isCustom
+                              ? [
+                                  BoxShadow(
+                                    color: theme.primaryColor.withValues(alpha: 0.2),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Custom',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: _isCustom ? Colors.white : const Color(0xFF64748B),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                );
-              }).toList(),
+                ),
+              ],
             ),
+            if (_isCustom) ...[
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: theme.primaryColor,
+                        inactiveTrackColor: const Color(0xFFEBF5FF),
+                        thumbColor: theme.primaryColor,
+                        overlayColor: theme.primaryColor.withValues(alpha: 0.12),
+                        valueIndicatorColor: theme.primaryColor,
+                        valueIndicatorTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      child: Slider(
+                        value: _questionCount.clamp(3, 30).toDouble(),
+                        min: 3,
+                        max: 30,
+                        divisions: 27,
+                        label: '$_questionCount Soal',
+                        onChanged: (val) {
+                          setState(() {
+                            _questionCount = val.round();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: theme.primaryColor, width: 1.5),
+                    ),
+                    child: Text(
+                      '$_questionCount',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 24),
 
             // Section 3: Difficulty Level
