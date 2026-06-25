@@ -64,29 +64,75 @@ class MockDataService {
 
   /// Simple check for typical random/gibberish keyboard typing
   static bool _isGibberish(String input) {
-    // Count vowels
-    final vowelCount = RegExp(r'[aeiouy]').allMatches(input).length;
-    if (vowelCount == 0 && input.length >= 4) {
-      return true; // No vowels in a word of 4+ letters is likely gibberish in ID/EN
-    }
+    final cleaned = input.toLowerCase().replaceAll(RegExp(r'\s+'), '');
+    if (cleaned.isEmpty) return true;
 
-    // Check keyboard slide keys
-    if (input.contains('asdf') ||
-        input.contains('sdfg') ||
-        input.contains('dfgh') ||
-        input.contains('fghj') ||
-        input.contains('ghjk') ||
-        input.contains('hjkl') ||
-        input.contains('qwer') ||
-        input.contains('wert') ||
-        input.contains('erty') ||
-        input.contains('zxcv')) {
+    // 1. Check if it contains only numbers and special characters (no letters)
+    if (!RegExp(r'[a-z]').hasMatch(cleaned)) {
       return true;
     }
 
-    // Repetitive single character check (e.g. "aaaaaa")
-    if (RegExp(r'(.)\1{3,}').hasMatch(input)) {
+    // 2. Check for repetitive single characters (e.g. "aaaa", "zzzzz")
+    if (RegExp(r'(.)\1{2,}').hasMatch(cleaned)) {
       return true;
+    }
+
+    // 3. Check for repetitive patterns (e.g., "asdasd", "qweqwe", "abcabc")
+    if (cleaned.length >= 6) {
+      final half = cleaned.length ~/ 2;
+      final part1 = cleaned.substring(0, half);
+      final part2 = cleaned.substring(half);
+      if (part1 == part2) return true;
+      
+      final third = cleaned.length ~/ 3;
+      final p1 = cleaned.substring(0, third);
+      final p2 = cleaned.substring(third, third * 2);
+      final p3 = cleaned.substring(third * 2);
+      if (p1 == p2 && p2 == p3) return true;
+    }
+
+    // 4. Count vowels (a, e, i, o, u)
+    // Note: 'y' is sometimes a vowel in English but let's count it as a vowel to be safe
+    final vowels = RegExp(r'[aeiouy]');
+    final vowelCount = vowels.allMatches(cleaned).length;
+    final totalLetters = RegExp(r'[a-z]').allMatches(cleaned).length;
+
+    if (totalLetters > 0) {
+      final vowelRatio = vowelCount / totalLetters;
+      // If the word has length >= 4 and has no vowels at all, it's gibberish
+      if (vowelCount == 0 && totalLetters >= 3) {
+        return true;
+      }
+      // If the word is long (>= 6 letters) and has very few vowels (e.g., less than 15% vowels)
+      if (totalLetters >= 6 && vowelRatio < 0.15) {
+        return true;
+      }
+    }
+
+    // 5. Check for consecutive consonant runs of 4 or more (e.g., "dsfgh", "lkjh", "qwrt")
+    final consonantRun = RegExp(r'[bcdfghjklmnpqrstvwxz]{4,}');
+    if (consonantRun.hasMatch(cleaned)) {
+      return true;
+    }
+
+    // 6. Check common keyboard sliding keys
+    final smashPatterns = [
+      'asdf', 'sdfg', 'dfgh', 'fghj', 'ghjk', 'hjkl',
+      'qwer', 'wert', 'erty', 'rtyu', 'tyui', 'yuio', 'uiop',
+      'zxcv', 'xcvb', 'cvbn', 'vbnm',
+      'qaz', 'wsx', 'edc', 'rfv', 'tgb', 'yhn', 'ujm', 'ikol',
+      'asd', 'qwe', 'zxc', 'jkl', 'mnb', 'poi', 'uyt', 'rew'
+    ];
+    for (var pattern in smashPatterns) {
+      if (cleaned.contains(pattern)) {
+        return true;
+      }
+    }
+
+    // 7. Check if it's just random punctuation or symbols mixed with very few letters
+    final letterCount = RegExp(r'[a-z]').allMatches(cleaned).length;
+    if (letterCount < cleaned.length * 0.4) {
+      return true; // More than 60% of the input is numbers/symbols
     }
 
     return false;
