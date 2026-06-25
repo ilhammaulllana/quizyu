@@ -52,10 +52,10 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
         top: 10,
       ),
       decoration: const BoxDecoration(
-        color: Color(0xFF161424),
+        color: Colors.white, // Clean white sheet
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         border: Border(
-          top: BorderSide(color: Color(0xFF2E2A47), width: 1.5),
+          top: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
         ),
       ),
       child: SingleChildScrollView(
@@ -69,7 +69,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
                 width: 48,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E2A47),
+                  color: const Color(0xFFE2E8F0),
                   borderRadius: BorderRadius.circular(2.5),
                 ),
               ),
@@ -81,6 +81,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: Color(0xFF0F172A),
                 letterSpacing: -0.5,
               ),
               textAlign: TextAlign.center,
@@ -93,7 +94,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF94A1B2),
+                color: Color(0xFF64748B),
               ),
             ),
             const SizedBox(height: 10),
@@ -126,7 +127,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF94A1B2),
+                color: Color(0xFF64748B),
               ),
             ),
             const SizedBox(height: 10),
@@ -141,12 +142,21 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
                     width: 60,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: isSelected ? theme.primaryColor.withOpacity(0.15) : const Color(0xFF1C1A30),
+                      color: isSelected ? theme.primaryColor : const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? theme.primaryColor : const Color(0xFF2E2A47),
+                        color: isSelected ? theme.primaryColor : const Color(0xFFE2E8F0),
                         width: 1.5,
                       ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: theme.primaryColor.withValues(alpha: 0.2),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : null,
                     ),
                     child: Center(
                       child: Text(
@@ -154,7 +164,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isSelected ? Colors.white : const Color(0xFF94A1B2),
+                          color: isSelected ? Colors.white : const Color(0xFF64748B),
                         ),
                       ),
                     ),
@@ -170,7 +180,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF94A1B2),
+                color: Color(0xFF64748B),
               ),
             ),
             const SizedBox(height: 10),
@@ -190,12 +200,21 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: isSelected ? levelColor.withOpacity(0.15) : const Color(0xFF1C1A30),
+                          color: isSelected ? levelColor : const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected ? levelColor : const Color(0xFF2E2A47),
+                            color: isSelected ? levelColor : const Color(0xFFE2E8F0),
                             width: 1.5,
                           ),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: levelColor.withValues(alpha: 0.2),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
                         ),
                         child: Center(
                           child: Text(
@@ -203,7 +222,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.white : const Color(0xFF94A1B2),
+                              color: isSelected ? Colors.white : const Color(0xFF64748B),
                             ),
                           ),
                         ),
@@ -263,10 +282,10 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isSelected ? theme.primaryColor.withOpacity(0.12) : const Color(0xFF1C1A30),
+          color: isSelected ? theme.primaryColor.withValues(alpha: 0.08) : const Color(0xFFF8FAFC),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? theme.primaryColor : const Color(0xFF2E2A47),
+            color: isSelected ? theme.primaryColor : const Color(0xFFE2E8F0),
             width: 1.5,
           ),
         ),
@@ -278,7 +297,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? Colors.white : const Color(0xFFE6E6FA),
+                color: isSelected ? theme.primaryColor : const Color(0xFF0F172A),
               ),
             ),
             const SizedBox(height: 4),
@@ -286,7 +305,7 @@ class _QuizSettingsSheetState extends ConsumerState<QuizSettingsSheet> {
               subtitle,
               style: TextStyle(
                 fontSize: 11,
-                color: isSelected ? theme.primaryColor.withOpacity(0.8) : const Color(0xFF94A1B2),
+                color: isSelected ? theme.primaryColor.withValues(alpha: 0.8) : const Color(0xFF64748B),
               ),
             ),
           ],

@@ -9,32 +9,39 @@ class QuizScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF161424),
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: Color(0xFF2E2A47), width: 1.5),
+          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
         ),
         title: const Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Color(0xFFFF8906)),
             SizedBox(width: 12),
-            Text('Keluar Kuis?'),
+            Text(
+              'Keluar Kuis?',
+              style: TextStyle(
+                color: Color(0xFF0F172A),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         content: const Text(
           'Apakah Anda yakin ingin keluar dari sesi kuis ini? Semua progres pengerjaan saat ini akan hilang.',
-          style: TextStyle(color: Color(0xFF94A1B2)),
+          style: TextStyle(color: Color(0xFF475569)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Batal', style: TextStyle(color: Color(0xFF94A1B2))),
+            child: const Text('Batal', style: TextStyle(color: Color(0xFF64748B))),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              elevation: 0,
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -72,10 +79,10 @@ class QuizScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close_rounded, color: Colors.white),
+          icon: const Icon(Icons.close_rounded, color: Color(0xFF0F172A)),
           onPressed: () => _showExitConfirmation(context, ref),
         ),
         title: Column(
@@ -86,14 +93,14 @@ class QuizScreen extends ConsumerWidget {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFA78BFA),
+                color: Color(0xFF7F5AF0),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
               'Soal ${questionIdx + 1} dari $totalQuestions',
-              style: const TextStyle(fontSize: 12, color: Color(0xFF94A1B2)),
+              style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
             ),
           ],
         ),
@@ -106,7 +113,7 @@ class QuizScreen extends ConsumerWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 6,
-                backgroundColor: const Color(0xFF1C1A30),
+                backgroundColor: const Color(0xFFE2E8F0),
                 valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
               ),
             ),
@@ -115,15 +122,7 @@ class QuizScreen extends ConsumerWidget {
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF07050C),
-              Color(0xFF0F0E1E),
-              Color(0xFF07050C),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: Color(0xFFF8FAFC), // Slate 50 background
         ),
         child: SafeArea(
           child: Column(
@@ -137,6 +136,7 @@ class QuizScreen extends ConsumerWidget {
                       // Question text card
                       Card(
                         margin: EdgeInsets.zero,
+                        color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Text(
@@ -144,6 +144,7 @@ class QuizScreen extends ConsumerWidget {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
+                              color: Color(0xFF0F172A),
                               height: 1.4,
                               letterSpacing: -0.2,
                             ),
@@ -182,10 +183,10 @@ class QuizScreen extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF161424),
+                              color: const Color(0xFFF0FDF4), // Light emerald background
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: theme.colorScheme.secondary.withOpacity(0.3),
+                                color: const Color(0xFFBBF7D0), // Soft green border
                                 width: 1.5,
                               ),
                             ),
@@ -215,7 +216,7 @@ class QuizScreen extends ConsumerWidget {
                                   currentQuestion.explanation,
                                   style: const TextStyle(
                                     fontSize: 14,
-                                    color: Color(0xFFE6E6FA),
+                                    color: Color(0xFF1E293B),
                                     height: 1.4,
                                   ),
                                 ),
@@ -233,9 +234,9 @@ class QuizScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
-                  color: Color(0xFF161424),
+                  color: Colors.white,
                   border: Border(
-                    top: BorderSide(color: Color(0xFF2E2A47), width: 1.5),
+                    top: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
                   ),
                 ),
                 child: Row(
@@ -279,14 +280,13 @@ class QuizScreen extends ConsumerWidget {
                             )
                           : OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Color(0xFF2E2A47), width: 1.5),
+                                side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
                                 padding: const EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
                               onPressed: () {
-                                // Skip marks as skipped and auto advances (or shows result first)
                                 ref.read(quizProvider.notifier).skipQuestion();
                                 ref.read(quizProvider.notifier).nextQuestion();
                               },
@@ -297,14 +297,14 @@ class QuizScreen extends ConsumerWidget {
                                     'Lewati Soal',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Color(0xFF94A1B2),
+                                      color: Color(0xFF475569),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   SizedBox(width: 8),
                                   Icon(
                                     Icons.skip_next_rounded,
-                                    color: Color(0xFF94A1B2),
+                                    color: Color(0xFF475569),
                                     size: 18,
                                   ),
                                 ],
@@ -333,30 +333,27 @@ class QuizScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final letter = String.fromCharCode(65 + index); // A, B, C, D
 
-    Color cardBgColor = const Color(0xFF161424);
-    Color borderColor = const Color(0xFF2E2A47);
-    Color letterBgColor = const Color(0xFF1C1A30);
-    Color letterTextColor = const Color(0xFF94A1B2);
+    Color cardBgColor = Colors.white;
+    Color borderColor = const Color(0xFFE2E8F0);
+    Color letterBgColor = const Color(0xFFF1F5F9);
+    Color letterTextColor = const Color(0xFF64748B);
     Widget suffixIcon = const SizedBox.shrink();
 
     if (isAnswered) {
       if (index == correctIndex) {
-        // Correct answer is always green
-        cardBgColor = theme.colorScheme.secondary.withOpacity(0.12);
-        borderColor = theme.colorScheme.secondary;
-        letterBgColor = theme.colorScheme.secondary;
+        cardBgColor = const Color(0xFFECFDF5); // Light emerald
+        borderColor = const Color(0xFF10B981); // Emerald 500
+        letterBgColor = const Color(0xFF10B981);
         letterTextColor = Colors.white;
-        suffixIcon = const Icon(Icons.check_circle_rounded, color: Color(0xFF2CB67D));
+        suffixIcon = const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981));
       } else if (isSelected) {
-        // User selected this and it was wrong
-        cardBgColor = theme.colorScheme.error.withOpacity(0.12);
-        borderColor = theme.colorScheme.error;
-        letterBgColor = theme.colorScheme.error;
+        cardBgColor = const Color(0xFFFEF2F2); // Light red
+        borderColor = const Color(0xFFEF4444); // Red 500
+        letterBgColor = const Color(0xFFEF4444);
         letterTextColor = Colors.white;
-        suffixIcon = const Icon(Icons.cancel_rounded, color: Color(0xFFEF4565));
+        suffixIcon = const Icon(Icons.cancel_rounded, color: Color(0xFFEF4444));
       }
     } else {
-      // Normal state, hover/active simulation
       if (isSelected) {
         borderColor = theme.primaryColor;
       }
@@ -407,8 +404,8 @@ class QuizScreen extends ConsumerWidget {
                   fontSize: 15,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   color: isAnswered && index != correctIndex && !isSelected
-                      ? const Color(0xFF6E6A8A)
-                      : const Color(0xFFE6E6FA),
+                      ? const Color(0xFF94A1B2) // Muted text for other options
+                      : const Color(0xFF1E293B),
                 ),
               ),
             ),
@@ -440,10 +437,10 @@ class _HintAccordionState extends State<HintAccordion> with SingleTickerProvider
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF161424).withOpacity(0.6),
+        color: const Color(0xFFF1F5F9), // Light slate gray background
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _isExpanded ? theme.primaryColor.withOpacity(0.4) : const Color(0xFF2E2A47),
+          color: _isExpanded ? theme.primaryColor.withValues(alpha: 0.4) : const Color(0xFFE2E8F0),
           width: 1,
         ),
       ),
@@ -464,7 +461,7 @@ class _HintAccordionState extends State<HintAccordion> with SingleTickerProvider
                     Icon(
                       Icons.help_outline_rounded,
                       size: 18,
-                      color: _isExpanded ? theme.primaryColor : const Color(0xFF94A1B2),
+                      color: _isExpanded ? theme.primaryColor : const Color(0xFF64748B),
                     ),
                     const SizedBox(width: 10),
                     const Expanded(
@@ -473,7 +470,7 @@ class _HintAccordionState extends State<HintAccordion> with SingleTickerProvider
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFE6E6FA),
+                          color: Color(0xFF1E293B),
                         ),
                       ),
                     ),
@@ -483,7 +480,7 @@ class _HintAccordionState extends State<HintAccordion> with SingleTickerProvider
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
                         size: 20,
-                        color: _isExpanded ? theme.primaryColor : const Color(0xFF94A1B2),
+                        color: _isExpanded ? theme.primaryColor : const Color(0xFF64748B),
                       ),
                     ),
                   ],
@@ -500,7 +497,7 @@ class _HintAccordionState extends State<HintAccordion> with SingleTickerProvider
                     widget.hintText,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF94A1B2),
+                      color: Color(0xFF475569), // Subtext color
                       fontStyle: FontStyle.italic,
                       height: 1.4,
                     ),
