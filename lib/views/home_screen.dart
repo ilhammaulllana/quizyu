@@ -106,52 +106,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
+          gradient: RadialGradient(
+            center: Alignment.center,
+            radius: 1.0,
             colors: [
-              Color(0xFF07050C),
-              Color(0xFF0F0E1E),
-              Color(0xFF07050C),
+              Color(0xFFEBF5FF), // Subtle blue in the center
+              Colors.white,      // Pure white at the edges
             ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            stops: [0.0, 0.8],
           ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 40),
-                // Glowing branding logo
+                // Top header: logo icon (top-left) and name (top-right)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Logo Icon on the left
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(0.15),
+                        color: theme.primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: theme.primaryColor.withOpacity(0.3),
+                          color: theme.primaryColor.withOpacity(0.2),
                           width: 1.5,
                         ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.auto_awesome,
-                        color: Color(0xFFA78BFA),
-                        size: 24,
+                        color: theme.primaryColor,
+                        size: 20,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    // Logo Name on the right
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Color(0xFF9061F9), Color(0xFFF472B6)],
+                        colors: [Color(0xFF7F5AF0), Color(0xFF9061F9)],
                       ).createShader(bounds),
                       child: const Text(
                         'quizyu',
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 24,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                           letterSpacing: 1.0,
@@ -160,7 +160,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 120),
+                
                 // Header main greeting text
                 const Text(
                   'Sebaiknya kita mulai dari mana?',
@@ -168,29 +169,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xFF0F172A), // Dark slate gray for readability
                     letterSpacing: -0.5,
                     height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Ketik topik belajar apa saja. Gemini akan langsung membuatkan kuis, evaluasi, dan panduan belajar untuk Anda.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF94A1B2),
-                    height: 1.4,
-                  ),
-                ),
                 const SizedBox(height: 48),
+
                 // Premium search bar container
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.primaryColor.withOpacity(0.08),
-                        blurRadius: 24,
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
                     ],
@@ -203,12 +196,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
+                      color: Color(0xFF0F172A),
                     ),
                     decoration: InputDecoration(
                       hintText: 'Minta Gemini... (e.g. "Kopi Nusantara", "Tata Surya")',
+                      hintStyle: const TextStyle(color: Color(0xFF94A1B2)),
+                      fillColor: Colors.white,
+                      filled: true,
                       prefixIcon: const Icon(
                         Icons.search_rounded,
-                        color: Color(0xFFA78BFA),
+                        color: Color(0xFF7F5AF0),
                         size: 24,
                       ),
                       suffixIcon: IconButton(
@@ -226,6 +223,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                         onPressed: () => _submitQuery(_searchController.text),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: Color(0xFF7F5AF0), width: 2),
+                      ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 18,
@@ -234,14 +239,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
+
                 // Dropdown model switcher (Standard vs Pro pills)
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF161424),
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFFF1F5F9), // Light grey panel
+                    borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: const Color(0xFF2E2A47),
+                      color: const Color(0xFFE2E8F0),
                       width: 1,
                     ),
                   ),
@@ -257,6 +263,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ref.read(settingsProvider.notifier).setModelVersion('Standard');
                         },
                       ),
+                      const SizedBox(width: 4),
                       _buildModelPill(
                         label: 'Gemini Pro',
                         isSelected: settings.modelVersion == 'Pro',
@@ -268,32 +275,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 60),
-                // Suggestion chips
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '💡 Topik Populer',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF94A1B2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  alignment: WrapAlignment.start,
-                  children: [
-                    _buildSuggestionChip('Flutter Development'),
-                    _buildSuggestionChip('Tata Surya'),
-                    _buildSuggestionChip('Kopi Nusantara'),
-                    _buildSuggestionChip('Sejarah Kemerdekaan RI'),
-                    _buildSuggestionChip('Struktur Sel Biologi'),
-                  ],
                 ),
               ],
             ),
@@ -316,19 +297,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? activeColor.withOpacity(0.15) : Colors.transparent,
+          color: isSelected ? activeColor : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? activeColor.withOpacity(0.4) : Colors.transparent,
-            width: 1,
-          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: activeColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           children: [
             Icon(
               icon,
               size: 16,
-              color: isSelected ? activeColor : const Color(0xFF6E6A8A),
+              color: isSelected ? Colors.white : const Color(0xFF64748B),
             ),
             const SizedBox(width: 8),
             Text(
@@ -336,31 +322,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? Colors.white : const Color(0xFF94A1B2),
+                color: isSelected ? Colors.white : const Color(0xFF64748B),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSuggestionChip(String topic) {
-    return ActionChip(
-      label: Text(topic),
-      avatar: const Icon(Icons.trending_up_rounded, size: 14, color: Color(0xFFA78BFA)),
-      backgroundColor: const Color(0xFF161424),
-      side: const BorderSide(color: Color(0xFF2E2A47), width: 1),
-      labelStyle: const TextStyle(
-        color: Color(0xFFE6E6FA),
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onPressed: () {
-        _searchController.text = topic;
-        _submitQuery(topic);
-      },
     );
   }
 }
