@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/quiz_session.dart';
-import '../services/mock_data.dart';
+import '../services/api_service.dart';
 
 class StudyGuideNotifier extends StateNotifier<AsyncValue<String?>> {
   StudyGuideNotifier() : super(const AsyncValue.data(null));
@@ -16,9 +16,11 @@ class StudyGuideNotifier extends StateNotifier<AsyncValue<String?>> {
         return selectedAnswer != q.correctAnswerIndex;
       }).toList();
 
-      final markdown = await MockDataService.generateStudyGuide(
+      final incorrectQuestionsJson = incorrectQuestions.map((q) => q.toJson()).toList();
+
+      final markdown = await ApiService().generateStudyGuide(
         topic: session.topic,
-        incorrectQuestions: incorrectQuestions,
+        incorrectQuestions: incorrectQuestionsJson,
       );
 
       state = AsyncValue.data(markdown);

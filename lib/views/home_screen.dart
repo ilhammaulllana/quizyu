@@ -62,7 +62,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     ref
         .read(quizProvider.notifier)
-        .startQuiz(topic: query, count: count, difficulty: settings.difficulty);
+        .startQuiz(
+          topic: query,
+          count: count,
+          difficulty: settings.difficulty,
+          modelVersion: settings.modelVersion,
+        );
   }
 
   @override

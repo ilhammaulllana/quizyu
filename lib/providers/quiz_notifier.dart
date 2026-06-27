@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/quiz_question.dart';
 import '../models/quiz_session.dart';
 import '../models/quiz_settings.dart';
-import '../services/mock_data.dart';
+import '../services/api_service.dart';
 
 class QuizNotifier extends StateNotifier<AsyncValue<QuizSession?>> {
   QuizNotifier() : super(const AsyncValue.data(null));
@@ -12,13 +12,15 @@ class QuizNotifier extends StateNotifier<AsyncValue<QuizSession?>> {
     required String topic,
     required int count,
     required String difficulty,
+    String modelVersion = 'Standard',
   }) async {
     state = const AsyncValue.loading();
     try {
-      final result = await MockDataService.generateQuiz(
+      final result = await ApiService().generateQuiz(
         topic: topic,
         count: count,
         difficulty: difficulty,
+        modelVersion: modelVersion,
       );
 
       if (result['is_valid'] == false) {
@@ -123,10 +125,11 @@ class QuizNotifier extends StateNotifier<AsyncValue<QuizSession?>> {
         // Let's re-add the incorrect ones but shuffle them or tweak slightly,
         // and pad with brand new questions on the same topic.
         final topic = prevSession.topic;
-        final res = await MockDataService.generateQuiz(
+        final res = await ApiService().generateQuiz(
           topic: topic,
           count: settings.questionCount,
           difficulty: settings.difficulty,
+          modelVersion: settings.modelVersion,
         );
 
         if (res['is_valid'] == false) {
@@ -174,6 +177,7 @@ class QuizNotifier extends StateNotifier<AsyncValue<QuizSession?>> {
       topic: settings.topic.isNotEmpty ? settings.topic : (prevSession?.topic ?? 'Umum'),
       count: settings.questionCount,
       difficulty: settings.difficulty,
+      modelVersion: settings.modelVersion,
     );
   }
 
