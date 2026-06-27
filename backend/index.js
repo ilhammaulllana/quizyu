@@ -102,8 +102,8 @@ app.post('/api/generate-quiz', async (req, res) => {
     const level = difficulty || 'Sedang';
     const isPro = modelVersion === 'Pro';
     
-    // Pilih model: Standard -> gemini-1.5-flash, Pro -> gemini-1.5-pro
-    const modelName = isPro ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+    // Pilih model: Standard -> gemini-2.5-flash, Pro -> gemini-2.5-pro
+    const modelName = isPro ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
     console.log(`[PrepMaster API] Generating ${questionCount} questions on "${topic}" (${level}) using model ${modelName}...`);
 
     const model = genAI.getGenerativeModel({ 
@@ -164,7 +164,7 @@ Pertahankan performa Anda atau coba tingkatkan kesulitan kuis Anda ke level beri
     console.log(`[PrepMaster API] Generating study guide for "${topic}" with ${incorrectQuestions.length} missed questions...`);
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction: systemPromptStudyGuide
     });
 
