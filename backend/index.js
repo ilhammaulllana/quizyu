@@ -115,12 +115,12 @@ app.post('/api/generate-quiz', async (req, res) => {
     const level = difficulty || 'Sedang';
     const isPro = modelVersion === 'Pro';
     
-    // Pilih model: gemini-3.5-flash (Standard) atau gemini-3.5-flash (Pro/Fallback)
+    // Pilih model kandidat dengan daftar fallback
     const modelCandidate = isPro ? 'gemini-3.5-flash' : 'gemini-3.5-flash';
     console.log(`[PrepMaster API] Generating ${questionCount} questions on "${topic}" (${level}) using model ${modelCandidate}...`);
 
     let responseText = null;
-    const modelsToTry = [modelCandidate, 'gemini-flash-latest'];
+    const modelsToTry = [modelCandidate, 'gemini-flash-latest', 'gemini-2.0-flash-lite', 'gemini-3.1-flash-lite'];
 
     for (const mName of modelsToTry) {
       try {
@@ -146,7 +146,10 @@ app.post('/api/generate-quiz', async (req, res) => {
     }
 
     if (!responseText) {
-      throw new Error("Semua model Gemini gagal memproses permintaan.");
+      return res.json({
+        is_valid: false,
+        error_message: "Batas pemanggilan AI tercapai (Rate Limit 429). Silakan tunggu sekitar 30 detik lalu tekan Coba Lagi."
+      });
     }
 
     let sanitizedText = responseText.trim();
@@ -163,9 +166,12 @@ app.post('/api/generate-quiz', async (req, res) => {
     return res.json(quizData);
   } catch (error) {
     console.error('[PrepMaster API] Error generating quiz:', error);
+    const isQuota = error.message && error.message.includes('429');
     return res.json({
       is_valid: false,
-      error_message: `Gagal membuat kuis karena kesalahan server: ${error.message || error}`
+      error_message: isQuota
+        ? 'Batas pemanggilan AI tercapai (Rate Limit 429). Silakan tunggu 30 detik dan coba lagi.'
+        : `Gagal membuat kuis karena kesalahan server: ${error.message || error}`
     });
   }
 });
@@ -191,21 +197,35 @@ Pertahankan performa Anda atau coba tingkatkan kesulitan kuis Anda ke level beri
 
     console.log(`[PrepMaster API] Generating study guide for "${topic}" with ${incorrectQuestions.length} missed questions...`);
 
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-3.5-flash',
-      systemInstruction: systemPromptStudyGuide
-    });
+    const modelsToTry = ['gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.0-flash-lite', 'gemini-3.1-flash-lite'];
+    let markdown = null;
 
-    const promptText = `Topik: "${topic}"
+    for (const mName of modelsToTry) {
+      try {
+        const model = genAI.getGenerativeModel({ 
+          model: mName,
+          systemInstruction: systemPromptStudyGuide
+        });
+
+        const promptText = `Topik: "${topic}"
 Pertanyaan yang salah dijawab oleh pengguna:
 ${JSON.stringify(incorrectQuestions, null, 2)}`;
 
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: promptText }] }]
-    });
+        const result = await model.generateContent({
+          contents: [{ role: "user", parts: [{ text: promptText }] }]
+        });
 
-    let markdown = result.response.text().trim();
-    
+        markdown = result.response.text().trim();
+        if (markdown) break;
+      } catch (err) {
+        console.warn(`[PrepMaster API] Study guide model ${mName} failed: ${err.message}. Trying next model...`);
+      }
+    }
+
+    if (!markdown) {
+      return res.status(429).send("Batas kuota pemanggilan AI tercapai (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.");
+    }
+
     // Pembersihan markdown wrapper jika ada
     if (markdown.startsWith("```markdown")) {
       markdown = markdown.substring(11);
@@ -219,7 +239,7 @@ ${JSON.stringify(incorrectQuestions, null, 2)}`;
     return res.send(markdown.trim());
   } catch (error) {
     console.error('[PrepMaster API] Error generating study guide:', error);
-    return res.status(500).send(`Gagal meracik panduan belajar karena kesalahan sistem: ${error.message || error}`);
+    return res.status(500).send(`Batas pemanggilan AI terlampaui. Silakan tunggu 30 detik lalu tekan Coba Lagi.`);
   }
 });
 

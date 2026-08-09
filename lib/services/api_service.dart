@@ -74,7 +74,13 @@ class ApiService {
       return 'Gagal terhubung ke server. Pastikan Anda terhubung ke internet.';
     }
 
-    return 'Terjadi kesalahan koneksi: $msg';
+    if (msg.contains('429') || msg.contains('Quota exceeded') || msg.contains('Rate Limit')) {
+      debugPrint('⚠️ [LOG RATE LIMIT 429] Kuota pemanggilan AI terlampaui pada path ${e.requestOptions.path}');
+      return 'Batas pemanggilan AI terlampaui (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.';
+    }
+
+    final cleanMsg = msg.length > 120 ? '${msg.substring(0, 120)}...' : msg;
+    return 'Terjadi kesalahan sistem: $cleanMsg';
   }
 
   /// Calls POST /api/generate-quiz to get a list of structured questions.

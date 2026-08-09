@@ -186,33 +186,54 @@ class StudyGuideScreen extends ConsumerWidget {
           ),
           error: (error, stack) {
             final errorStr = error.toString().replaceAll('Exception: ', '');
-            final isOffline = errorStr.toLowerCase().contains('koneksi') ||
-                errorStr.toLowerCase().contains('internet') ||
-                errorStr.toLowerCase().contains('jaringan') ||
-                errorStr.toLowerCase().contains('server');
+            final isOffline = errorStr.toLowerCase().contains('tidak ada koneksi') ||
+                errorStr.toLowerCase().contains('periksa jaringan');
+            final isQuota = errorStr.toLowerCase().contains('rate limit') ||
+                errorStr.toLowerCase().contains('429') ||
+                errorStr.toLowerCase().contains('kuota');
 
             if (isOffline) {
               debugPrint('🌐 [STUDY GUIDE LOG - NO INTERNET] Gagal memuat analisis karena offline: $errorStr');
+            } else if (isQuota) {
+              debugPrint('⚠️ [STUDY GUIDE LOG - RATE LIMIT 429] $errorStr');
             }
 
+            final IconData iconData = isOffline
+                ? Icons.wifi_off_rounded
+                : isQuota
+                    ? Icons.hourglass_top_rounded
+                    : Icons.error_outline_rounded;
+
+            final Color accentColor = isOffline
+                ? const Color(0xFFD97706)
+                : isQuota
+                    ? const Color(0xFF7F5AF0)
+                    : theme.colorScheme.error;
+
+            final String titleText = isOffline
+                ? 'Koneksi Internet Terputus'
+                : isQuota
+                    ? 'Batas Kuota AI Terlampaui'
+                    : 'Gagal Memuat Analisis';
+
             return Center(
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
-                      color: isOffline ? const Color(0xFFD97706) : theme.colorScheme.error,
+                      iconData,
+                      color: accentColor,
                       size: 56,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      isOffline ? 'Koneksi Internet Terputus' : 'Gagal Memuat Analisis',
+                      titleText,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: isOffline ? const Color(0xFFD97706) : theme.colorScheme.error,
+                        color: accentColor,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -221,6 +242,7 @@ class StudyGuideScreen extends ConsumerWidget {
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF64748B),
+                        height: 1.4,
                       ),
                       textAlign: TextAlign.center,
                     ),
