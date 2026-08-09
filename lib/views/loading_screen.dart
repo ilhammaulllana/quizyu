@@ -42,8 +42,8 @@ class _GorgeousLoadingScreenState extends ConsumerState<GorgeousLoadingScreen>
       }
     });
 
-    // Show cancel button if loading takes longer than 3.5s
-    _cancelTimer = Timer(const Duration(milliseconds: 3500), () {
+    // Show cancel button if loading takes longer than 60 seconds (1 minute)
+    _cancelTimer = Timer(const Duration(seconds: 60), () {
       if (mounted) {
         setState(() {
           _showCancelButton = true;
