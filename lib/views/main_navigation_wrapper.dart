@@ -13,6 +13,59 @@ class MainNavigationWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final quizState = ref.watch(quizProvider);
 
+    // Listen for error state globally in navigation wrapper so snackbar & logs are never missed
+    ref.listen<AsyncValue>(quizProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, stackTrace) {
+          final errorStr = error.toString().replaceAll('Exception: ', '');
+          final isOffline = errorStr.toLowerCase().contains('koneksi') ||
+              errorStr.toLowerCase().contains('internet') ||
+              errorStr.toLowerCase().contains('jaringan') ||
+              errorStr.toLowerCase().contains('server');
+
+          debugPrint('🌐 [GLOBAL NAVIGATION ERROR LOG] $errorStr (isOffline: $isOffline)');
+
+          final scaffold = ScaffoldMessenger.maybeOf(context);
+          if (scaffold != null) {
+            scaffold.hideCurrentSnackBar();
+            scaffold.showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(
+                      isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        errorStr,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: isOffline ? const Color(0xFFD97706) : const Color(0xFFE11D48),
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                margin: const EdgeInsets.all(16),
+                action: SnackBarAction(
+                  label: 'OK',
+                  textColor: Colors.white,
+                  onPressed: () {
+                    scaffold.hideCurrentSnackBar();
+                  },
+                ),
+              ),
+            );
+          }
+        },
+      );
+    });
+
     return quizState.when(
       data: (session) {
         if (session == null) {
@@ -25,9 +78,6 @@ class MainNavigationWrapper extends ConsumerWidget {
       },
       loading: () => const GorgeousLoadingScreen(),
       error: (error, stack) {
-        // If there's an error state, we show the HomeScreen but will display the error.
-        // The HomeScreen itself has a listener to show Snackbars for errors,
-        // so we render HomeScreen here as fallback.
         return const HomeScreen();
       },
     );

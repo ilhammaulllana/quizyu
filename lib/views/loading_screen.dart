@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/quiz_notifier.dart';
 
-class GorgeousLoadingScreen extends StatefulWidget {
+class GorgeousLoadingScreen extends ConsumerStatefulWidget {
   const GorgeousLoadingScreen({super.key});
 
   @override
-  State<GorgeousLoadingScreen> createState() => _GorgeousLoadingScreenState();
+  ConsumerState<GorgeousLoadingScreen> createState() => _GorgeousLoadingScreenState();
 }
 
-class _GorgeousLoadingScreenState extends State<GorgeousLoadingScreen>
+class _GorgeousLoadingScreenState extends ConsumerState<GorgeousLoadingScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   int _messageIndex = 0;
+  bool _showCancelButton = false;
   final List<String> _loadingMessages = [
     'Membangun koneksi dengan Gemini...',
     'Menganalisis topik Anda...',
@@ -21,6 +24,7 @@ class _GorgeousLoadingScreenState extends State<GorgeousLoadingScreen>
     'Hampir selesai, memformat jawaban...'
   ];
   late Timer _timer;
+  late Timer _cancelTimer;
 
   @override
   void initState() {
@@ -37,12 +41,22 @@ class _GorgeousLoadingScreenState extends State<GorgeousLoadingScreen>
         });
       }
     });
+
+    // Show cancel button if loading takes longer than 3.5s
+    _cancelTimer = Timer(const Duration(milliseconds: 3500), () {
+      if (mounted) {
+        setState(() {
+          _showCancelButton = true;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _timer.cancel();
+    _cancelTimer.cancel();
     super.dispose();
   }
 
@@ -178,6 +192,30 @@ class _GorgeousLoadingScreenState extends State<GorgeousLoadingScreen>
                   );
                 }),
               ),
+              if (_showCancelButton) ...[
+                const SizedBox(height: 48),
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF64748B),
+                    side: const BorderSide(color: Color(0xFFCBD5E1), width: 1.2),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    ref.read(quizProvider.notifier).resetQuiz();
+                  },
+                  icon: const Icon(Icons.close_rounded, size: 18),
+                  label: const Text(
+                    'Batal & Kembali ke Beranda',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
