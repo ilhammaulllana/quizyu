@@ -98,7 +98,20 @@ app.post('/api/generate-quiz', async (req, res) => {
       });
     }
 
-    const questionCount = parseInt(count) || 10;
+    let questionCount = parseInt(count) || 10;
+
+    // Deteksi jika pengguna menuliskan jumlah soal secara spesifik di dalam topik prompt (misal: "buat soal pseudecode 20", "20 soal pseudocode")
+    const match1 = topic.match(/(\d+)\s*(?:soal|pertanyaan|items?|buah)/i);
+    const match2 = topic.match(/(?:soal|pertanyaan|items?|buah)\s+.*?\s*(\d+)/i);
+    const match3 = topic.match(/\b(\d+)\b/);
+    const extractedNum = match1?.[1] || match2?.[1] || match3?.[1];
+    if (extractedNum) {
+      const parsed = parseInt(extractedNum, 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 30) {
+        questionCount = parsed;
+      }
+    }
+
     const level = difficulty || 'Sedang';
     const isPro = modelVersion === 'Pro';
     
@@ -116,7 +129,7 @@ app.post('/api/generate-quiz', async (req, res) => {
           systemInstruction: systemPromptQuiz
         });
 
-        const promptText = `Buatkan kuis mengenai topik: "${topic}" sebanyak ${questionCount} soal dengan tingkat kesulitan: "${level}".`;
+        const promptText = `Buatkan kuis mengenai topik: "${topic}" dengan TEPAT ${questionCount} pertanyaan (Pastikan array "questions" berisi persis ${questionCount} item soal). Tingkat kesulitan: "${level}".`;
 
         const result = await model.generateContent({
           contents: [{ role: "user", parts: [{ text: promptText }] }],

@@ -47,15 +47,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final settings = ref.read(settingsProvider);
 
-    // Parse potential question count from prompt, e.g., "Tata surya 5 soal"
+    // Parse potential question count from prompt, e.g., "buat soal pseudecode 20", "20 soal pseudocode", "pseudocode 20"
     int count = settings.questionCount;
-    final match = RegExp(
-      r'(\d+)\s*(?:soal|pertanyaan|items?)',
-      caseSensitive: false,
-    ).firstMatch(query);
-    if (match != null) {
-      final parsed = int.tryParse(match.group(1) ?? '');
-      if (parsed != null && parsed > 0 && parsed <= 30) {
+    final numMatch1 = RegExp(r'(\d+)\s*(?:soal|pertanyaan|items?|buah)', caseSensitive: false).firstMatch(query);
+    final numMatch2 = RegExp(r'(?:soal|pertanyaan|items?|buah)\s+.*?\s*(\d+)', caseSensitive: false).firstMatch(query);
+    final numMatch3 = RegExp(r'\b(\d+)\b').firstMatch(query);
+
+    final String? foundNum = numMatch1?.group(1) ?? numMatch2?.group(1) ?? numMatch3?.group(1);
+    if (foundNum != null) {
+      final parsed = int.tryParse(foundNum);
+      if (parsed != null && parsed >= 1 && parsed <= 30) {
         count = parsed;
       }
     }
