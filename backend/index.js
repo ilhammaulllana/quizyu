@@ -19,6 +19,22 @@ if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
 // Inisialisasi Google Generative AI
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || "");
 
+// Helper untuk mengecek apakah kesalahan disebabkan oleh masalah koneksi internet/jaringan
+function isNetworkError(err) {
+  if (!err) return false;
+  const msg = (err.message || err.toString() || '').toLowerCase();
+  return (
+    msg.includes('fetch failed') ||
+    msg.includes('enotfound') ||
+    msg.includes('enetunreach') ||
+    msg.includes('etimedout') ||
+    msg.includes('econnrefused') ||
+    msg.includes('getaddrinfo') ||
+    msg.includes('network') ||
+    msg.includes('socket')
+  );
+}
+
 // System Prompt untuk Pembuatan Kuis
 const systemPromptQuiz = `
 Anda adalah PrepMaster AI, sebuah AI pembuat kuis pintar.
@@ -120,6 +136,7 @@ app.post('/api/generate-quiz', async (req, res) => {
     console.log(`[PrepMaster API] Generating ${questionCount} questions on "${topic}" (${level}) using model ${modelCandidate}...`);
 
     let responseText = null;
+    let isOfflineError = false;
     const modelsToTry = [modelCandidate, 'gemini-flash-latest', 'gemini-2.0-flash-lite', 'gemini-3.1-flash-lite'];
 
     for (const mName of modelsToTry) {
@@ -142,13 +159,23 @@ app.post('/api/generate-quiz', async (req, res) => {
         if (responseText) break;
       } catch (err) {
         console.warn(`[PrepMaster API] Model ${mName} failed: ${err.message}. Trying next model...`);
+        if (isNetworkError(err)) {
+          isOfflineError = true;
+          break; // Stop retrying if host has no internet connection
+        }
       }
     }
 
     if (!responseText) {
-      return res.json({
+      if (isOfflineError) {
+        return res.status(503).json({
+          is_valid: false,
+          error_message: "[OFFLINE] Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi."
+        });
+      }
+      return res.status(429).json({
         is_valid: false,
-        error_message: "Batas pemanggilan AI tercapai (Rate Limit 429). Silakan tunggu sekitar 30 detik lalu tekan Coba Lagi."
+        error_message: "[QUOTA_EXCEEDED] Batas Kuota Gratis AI Gemini Terlampaui (Rate Limit 429). Silakan tunggu sekitar 30 detik lalu tekan Coba Lagi."
       });
     }
 
@@ -166,12 +193,18 @@ app.post('/api/generate-quiz', async (req, res) => {
     return res.json(quizData);
   } catch (error) {
     console.error('[PrepMaster API] Error generating quiz:', error);
+    if (isNetworkError(error)) {
+      return res.status(503).json({
+        is_valid: false,
+        error_message: "[OFFLINE] Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi."
+      });
+    }
     const isQuota = error.message && error.message.includes('429');
     return res.json({
       is_valid: false,
       error_message: isQuota
-        ? 'Batas pemanggilan AI tercapai (Rate Limit 429). Silakan tunggu 30 detik dan coba lagi.'
-        : `Gagal membuat kuis karena kesalahan server: ${error.message || error}`
+        ? '[QUOTA_EXCEEDED] Batas Kuota Gratis AI Gemini Terlampaui (Rate Limit 429). Silakan tunggu 30 detik dan coba lagi.'
+        : `[SYSTEM_ERROR] Gagal membuat kuis karena kesalahan server: ${error.message || error}`
     });
   }
 });
@@ -199,6 +232,7 @@ Pertahankan performa Anda atau coba tingkatkan kesulitan kuis Anda ke level beri
 
     const modelsToTry = ['gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.0-flash-lite', 'gemini-3.1-flash-lite'];
     let markdown = null;
+    let isOfflineError = false;
 
     for (const mName of modelsToTry) {
       try {
@@ -219,11 +253,18 @@ ${JSON.stringify(incorrectQuestions, null, 2)}`;
         if (markdown) break;
       } catch (err) {
         console.warn(`[PrepMaster API] Study guide model ${mName} failed: ${err.message}. Trying next model...`);
+        if (isNetworkError(err)) {
+          isOfflineError = true;
+          break;
+        }
       }
     }
 
     if (!markdown) {
-      return res.status(429).send("Batas kuota pemanggilan AI tercapai (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.");
+      if (isOfflineError) {
+        return res.status(503).send("[OFFLINE] Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi.");
+      }
+      return res.status(429).send("[QUOTA_EXCEEDED] Batas Kuota Gratis AI Gemini Terlampaui (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.");
     }
 
     // Pembersihan markdown wrapper jika ada
@@ -239,7 +280,10 @@ ${JSON.stringify(incorrectQuestions, null, 2)}`;
     return res.send(markdown.trim());
   } catch (error) {
     console.error('[PrepMaster API] Error generating study guide:', error);
-    return res.status(500).send(`Batas pemanggilan AI terlampaui. Silakan tunggu 30 detik lalu tekan Coba Lagi.`);
+    if (isNetworkError(error)) {
+      return res.status(503).send("[OFFLINE] Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi.");
+    }
+    return res.status(500).send(`[SYSTEM_ERROR] Batas pemanggilan AI terlampaui. Silakan tunggu 30 detik lalu tekan Coba Lagi.`);
   }
 });
 

@@ -188,11 +188,14 @@ class StudyGuideScreen extends ConsumerWidget {
             final rawMsg = error.toString().replaceAll('Exception: ', '');
             final isOffline = rawMsg.contains('[OFFLINE]') ||
                 rawMsg.toLowerCase().contains('tidak ada koneksi') ||
-                rawMsg.toLowerCase().contains('periksa jaringan');
-            final isQuota = rawMsg.contains('[QUOTA_EXCEEDED]') ||
+                rawMsg.toLowerCase().contains('periksa jaringan') ||
+                rawMsg.toLowerCase().contains('jaringan terputus');
+            final isQuota = !isOffline && (
+                rawMsg.contains('[QUOTA_EXCEEDED]') ||
                 rawMsg.toLowerCase().contains('rate limit') ||
                 rawMsg.toLowerCase().contains('429') ||
-                rawMsg.toLowerCase().contains('kuota');
+                rawMsg.toLowerCase().contains('kuota')
+            );
 
             final displayMsg = rawMsg
                 .replaceAll('[OFFLINE] ', '')
