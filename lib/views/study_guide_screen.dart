@@ -184,54 +184,70 @@ class StudyGuideScreen extends ConsumerWidget {
               ],
             ),
           ),
-          error: (error, stack) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    color: theme.colorScheme.error,
-                    size: 48,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Gagal Memuat Analisis',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.error,
+          error: (error, stack) {
+            final errorStr = error.toString().replaceAll('Exception: ', '');
+            final isOffline = errorStr.toLowerCase().contains('koneksi') ||
+                errorStr.toLowerCase().contains('internet') ||
+                errorStr.toLowerCase().contains('jaringan') ||
+                errorStr.toLowerCase().contains('server');
+
+            if (isOffline) {
+              debugPrint('🌐 [STUDY GUIDE LOG - NO INTERNET] Gagal memuat analisis karena offline: $errorStr');
+            }
+
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                      color: isOffline ? const Color(0xFFD97706) : theme.colorScheme.error,
+                      size: 56,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    error.toString(),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF64748B),
+                    const SizedBox(height: 16),
+                    Text(
+                      isOffline ? 'Koneksi Internet Terputus' : 'Gagal Memuat Analisis',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: isOffline ? const Color(0xFFD97706) : theme.colorScheme.error,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.primaryColor,
-                      foregroundColor: Colors.white,
+                    const SizedBox(height: 8),
+                    Text(
+                      errorStr,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF64748B),
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    onPressed: () {
-                      // Retry generating
-                      final session = ref.read(quizProvider).value;
-                      if (session != null) {
-                        ref.read(studyGuideProvider.notifier).generateGuide(session);
-                      }
-                    },
-                    child: const Text('Coba Lagi'),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        final session = ref.read(quizProvider).value;
+                        if (session != null) {
+                          ref.read(studyGuideProvider.notifier).generateGuide(session);
+                        }
+                      },
+                      icon: const Icon(Icons.refresh_rounded, size: 18),
+                      label: const Text('Coba Lagi'),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

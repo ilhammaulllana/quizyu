@@ -50,6 +50,33 @@ class ApiService {
     return 'http://localhost:3000';
   }
 
+  /// Helper to extract clean user-friendly network and offline error messages.
+  String _parseDioError(DioException e) {
+    if (e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        (e.error != null && e.error.toString().contains('SocketException'))) {
+      debugPrint('🌐 [LOG NETWORK DISCONNECTED] Perangkat tidak terhubung ke internet / server (Path: ${e.requestOptions.path})');
+      return 'Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi.';
+    }
+
+    if (e.response?.data != null && e.response?.data is Map) {
+      final data = e.response!.data as Map;
+      if (data.containsKey('error_message')) {
+        return data['error_message'].toString();
+      }
+    }
+
+    final String msg = e.response?.data?.toString() ?? e.message ?? 'Unknown error';
+    if (msg.contains('Connection refused')) {
+      debugPrint('🌐 [LOG CONNECTION REFUSED] Koneksi ke backend ditolak pada path ${e.requestOptions.path}');
+      return 'Gagal terhubung ke server. Pastikan Anda terhubung ke internet.';
+    }
+
+    return 'Terjadi kesalahan koneksi: $msg';
+  }
+
   /// Calls POST /api/generate-quiz to get a list of structured questions.
   Future<Map<String, dynamic>> generateQuiz({
     required String topic,
@@ -74,8 +101,8 @@ class ApiService {
         throw Exception('Format respon tidak sesuai. Diharapkan JSON object.');
       }
     } on DioException catch (e) {
-      final String errMsg = e.response?.data?.toString() ?? e.message ?? 'Unknown error';
-      throw Exception('Koneksi ke backend gagal: $errMsg');
+      final String errMsg = _parseDioError(e);
+      throw Exception(errMsg);
     }
   }
 
@@ -98,8 +125,8 @@ class ApiService {
 
       return response.data?.toString() ?? '';
     } on DioException catch (e) {
-      final String errMsg = e.response?.data?.toString() ?? e.message ?? 'Unknown error';
-      throw Exception('Gagal mendapatkan panduan belajar dari AI: $errMsg');
+      final String errMsg = _parseDioError(e);
+      throw Exception(errMsg);
     }
   }
 }

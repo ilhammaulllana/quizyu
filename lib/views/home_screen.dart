@@ -80,23 +80,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.listen<AsyncValue>(quizProvider, (previous, next) {
       next.whenOrNull(
         error: (error, stackTrace) {
+          final errorStr = error.toString().replaceAll('Exception: ', '');
+          final isOffline = errorStr.toLowerCase().contains('koneksi') ||
+              errorStr.toLowerCase().contains('internet') ||
+              errorStr.toLowerCase().contains('jaringan') ||
+              errorStr.toLowerCase().contains('server');
+
+          if (isOffline) {
+            debugPrint('🌐 [UI LOG - NO INTERNET] Menampilkan pesan offline ke pengguna: $errorStr');
+          } else {
+            debugPrint('❌ [UI LOG - GENERAL ERROR] $errorStr');
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 children: [
-                  const Icon(Icons.error_outline_rounded, color: Colors.white),
+                  Icon(
+                    isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                    color: Colors.white,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      error.toString(),
+                      errorStr,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
               ),
-              backgroundColor: theme.colorScheme.error,
+              backgroundColor: isOffline ? const Color(0xFFD97706) : theme.colorScheme.error,
               behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 4),
+              duration: const Duration(seconds: 5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
