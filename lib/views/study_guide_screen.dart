@@ -185,17 +185,26 @@ class StudyGuideScreen extends ConsumerWidget {
             ),
           ),
           error: (error, stack) {
-            final errorStr = error.toString().replaceAll('Exception: ', '');
-            final isOffline = errorStr.toLowerCase().contains('tidak ada koneksi') ||
-                errorStr.toLowerCase().contains('periksa jaringan');
-            final isQuota = errorStr.toLowerCase().contains('rate limit') ||
-                errorStr.toLowerCase().contains('429') ||
-                errorStr.toLowerCase().contains('kuota');
+            final rawMsg = error.toString().replaceAll('Exception: ', '');
+            final isOffline = rawMsg.contains('[OFFLINE]') ||
+                rawMsg.toLowerCase().contains('tidak ada koneksi') ||
+                rawMsg.toLowerCase().contains('periksa jaringan');
+            final isQuota = rawMsg.contains('[QUOTA_EXCEEDED]') ||
+                rawMsg.toLowerCase().contains('rate limit') ||
+                rawMsg.toLowerCase().contains('429') ||
+                rawMsg.toLowerCase().contains('kuota');
+
+            final displayMsg = rawMsg
+                .replaceAll('[OFFLINE] ', '')
+                .replaceAll('[QUOTA_EXCEEDED] ', '')
+                .replaceAll('[SYSTEM_ERROR] ', '');
 
             if (isOffline) {
-              debugPrint('🌐 [STUDY GUIDE LOG - NO INTERNET] Gagal memuat analisis karena offline: $errorStr');
+              debugPrint('🌐 [LOG TIDAK ADA KONEKSI INTERNET] $displayMsg');
             } else if (isQuota) {
-              debugPrint('⚠️ [STUDY GUIDE LOG - RATE LIMIT 429] $errorStr');
+              debugPrint('⏳ [LOG BATAS KUOTA AI GEMINI TERLAMPAUI] $displayMsg');
+            } else {
+              debugPrint('❌ [LOG KESALAHAN SISTEM] $displayMsg');
             }
 
             final IconData iconData = isOffline
@@ -213,7 +222,7 @@ class StudyGuideScreen extends ConsumerWidget {
             final String titleText = isOffline
                 ? 'Koneksi Internet Terputus'
                 : isQuota
-                    ? 'Batas Kuota AI Terlampaui'
+                    ? 'Batas Kuota Gratis AI Gemini Terlampaui'
                     : 'Gagal Memuat Analisis';
 
             return Center(
@@ -235,10 +244,11 @@ class StudyGuideScreen extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         color: accentColor,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      errorStr,
+                      displayMsg,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF64748B),
@@ -249,7 +259,7 @@ class StudyGuideScreen extends ConsumerWidget {
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
+                        backgroundColor: accentColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         shape: RoundedRectangleBorder(

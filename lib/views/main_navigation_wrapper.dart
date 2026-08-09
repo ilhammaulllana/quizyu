@@ -17,13 +17,27 @@ class MainNavigationWrapper extends ConsumerWidget {
     ref.listen<AsyncValue>(quizProvider, (previous, next) {
       next.whenOrNull(
         error: (error, stackTrace) {
-          final errorStr = error.toString().replaceAll('Exception: ', '');
-          final isOffline = errorStr.toLowerCase().contains('koneksi') ||
-              errorStr.toLowerCase().contains('internet') ||
-              errorStr.toLowerCase().contains('jaringan') ||
-              errorStr.toLowerCase().contains('server');
+          final rawMsg = error.toString().replaceAll('Exception: ', '');
+          final isOffline = rawMsg.contains('[OFFLINE]') ||
+              rawMsg.toLowerCase().contains('tidak ada koneksi') ||
+              rawMsg.toLowerCase().contains('periksa jaringan');
+          final isQuota = rawMsg.contains('[QUOTA_EXCEEDED]') ||
+              rawMsg.toLowerCase().contains('rate limit') ||
+              rawMsg.toLowerCase().contains('429') ||
+              rawMsg.toLowerCase().contains('kuota');
 
-          debugPrint('🌐 [GLOBAL NAVIGATION ERROR LOG] $errorStr (isOffline: $isOffline)');
+          final displayMsg = rawMsg
+              .replaceAll('[OFFLINE] ', '')
+              .replaceAll('[QUOTA_EXCEEDED] ', '')
+              .replaceAll('[SYSTEM_ERROR] ', '');
+
+          if (isOffline) {
+            debugPrint('🌐 [LOG TIDAK ADA KONEKSI INTERNET] $displayMsg');
+          } else if (isQuota) {
+            debugPrint('⏳ [LOG BATAS KUOTA AI GEMINI TERLAMPAUI] $displayMsg');
+          } else {
+            debugPrint('❌ [LOG KESALAHAN SISTEM] $displayMsg');
+          }
 
           final scaffold = ScaffoldMessenger.maybeOf(context);
           if (scaffold != null) {
@@ -33,19 +47,27 @@ class MainNavigationWrapper extends ConsumerWidget {
                 content: Row(
                   children: [
                     Icon(
-                      isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                      isOffline
+                          ? Icons.wifi_off_rounded
+                          : isQuota
+                              ? Icons.hourglass_top_rounded
+                              : Icons.error_outline_rounded,
                       color: Colors.white,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        errorStr,
+                        displayMsg,
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
                 ),
-                backgroundColor: isOffline ? const Color(0xFFD97706) : const Color(0xFFE11D48),
+                backgroundColor: isOffline
+                    ? const Color(0xFFD97706)
+                    : isQuota
+                        ? const Color(0xFF7F5AF0)
+                        : const Color(0xFFE11D48),
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 5),
                 shape: RoundedRectangleBorder(

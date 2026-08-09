@@ -57,30 +57,36 @@ class ApiService {
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
         (e.error != null && e.error.toString().contains('SocketException'))) {
-      debugPrint('🌐 [LOG NETWORK DISCONNECTED] Perangkat tidak terhubung ke internet / server (Path: ${e.requestOptions.path})');
-      return 'Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi.';
+      debugPrint('🌐 [LOG TIDAK ADA KONEKSI INTERNET] Perangkat offline / jaringan terputus (Path: ${e.requestOptions.path})');
+      return '[OFFLINE] Tidak ada koneksi internet. Silakan periksa jaringan Anda dan coba lagi.';
     }
 
     if (e.response?.data != null && e.response?.data is Map) {
       final data = e.response!.data as Map;
       if (data.containsKey('error_message')) {
-        return data['error_message'].toString();
+        final msg = data['error_message'].toString();
+        if (msg.contains('429') || msg.contains('Rate Limit') || msg.contains('kuota')) {
+          debugPrint('⏳ [LOG BATAS KUOTA AI GEMINI TERLAMPAUI] Pemanggilan AI melebihi kuota 429 pada path ${e.requestOptions.path}');
+          return '[QUOTA_EXCEEDED] Batas Kuota Gratis AI Gemini Terlampaui (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.';
+        }
+        return msg;
       }
     }
 
     final String msg = e.response?.data?.toString() ?? e.message ?? 'Unknown error';
     if (msg.contains('Connection refused')) {
-      debugPrint('🌐 [LOG CONNECTION REFUSED] Koneksi ke backend ditolak pada path ${e.requestOptions.path}');
-      return 'Gagal terhubung ke server. Pastikan Anda terhubung ke internet.';
+      debugPrint('🌐 [LOG TIDAK ADA KONEKSI INTERNET] Connection refused pada path ${e.requestOptions.path}');
+      return '[OFFLINE] Tidak ada koneksi internet / server backend tidak terjangkau.';
     }
 
     if (msg.contains('429') || msg.contains('Quota exceeded') || msg.contains('Rate Limit')) {
-      debugPrint('⚠️ [LOG RATE LIMIT 429] Kuota pemanggilan AI terlampaui pada path ${e.requestOptions.path}');
-      return 'Batas pemanggilan AI terlampaui (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.';
+      debugPrint('⏳ [LOG BATAS KUOTA AI GEMINI TERLAMPAUI] Kuota pemanggilan AI terlampaui pada path ${e.requestOptions.path}');
+      return '[QUOTA_EXCEEDED] Batas Kuota Gratis AI Gemini Terlampaui (Rate Limit 429). Silakan tunggu 30 detik lalu tekan Coba Lagi.';
     }
 
     final cleanMsg = msg.length > 120 ? '${msg.substring(0, 120)}...' : msg;
-    return 'Terjadi kesalahan sistem: $cleanMsg';
+    debugPrint('❌ [LOG KESALAHAN SISTEM] $cleanMsg');
+    return '[SYSTEM_ERROR] Terjadi kesalahan sistem: $cleanMsg';
   }
 
   /// Calls POST /api/generate-quiz to get a list of structured questions.
