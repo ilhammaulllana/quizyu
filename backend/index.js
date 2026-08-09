@@ -102,25 +102,40 @@ app.post('/api/generate-quiz', async (req, res) => {
     const level = difficulty || 'Sedang';
     const isPro = modelVersion === 'Pro';
     
-    // Pilih model: Standard -> gemini-2.5-flash, Pro -> gemini-2.5-pro
-    const modelName = isPro ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
-    console.log(`[PrepMaster API] Generating ${questionCount} questions on "${topic}" (${level}) using model ${modelName}...`);
+    // Pilih model: gemini-3.5-flash (Standard) atau gemini-3.5-flash (Pro/Fallback)
+    const modelCandidate = isPro ? 'gemini-3.5-flash' : 'gemini-3.5-flash';
+    console.log(`[PrepMaster API] Generating ${questionCount} questions on "${topic}" (${level}) using model ${modelCandidate}...`);
 
-    const model = genAI.getGenerativeModel({ 
-      model: modelName,
-      systemInstruction: systemPromptQuiz
-    });
+    let responseText = null;
+    const modelsToTry = [modelCandidate, 'gemini-flash-latest'];
 
-    const promptText = `Buatkan kuis mengenai topik: "${topic}" sebanyak ${questionCount} soal dengan tingkat kesulitan: "${level}".`;
+    for (const mName of modelsToTry) {
+      try {
+        const model = genAI.getGenerativeModel({ 
+          model: mName,
+          systemInstruction: systemPromptQuiz
+        });
 
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: promptText }] }],
-      generationConfig: {
-        responseMimeType: "application/json",
+        const promptText = `Buatkan kuis mengenai topik: "${topic}" sebanyak ${questionCount} soal dengan tingkat kesulitan: "${level}".`;
+
+        const result = await model.generateContent({
+          contents: [{ role: "user", parts: [{ text: promptText }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+          }
+        });
+
+        responseText = result.response.text();
+        if (responseText) break;
+      } catch (err) {
+        console.warn(`[PrepMaster API] Model ${mName} failed: ${err.message}. Trying next model...`);
       }
-    });
+    }
 
-    const responseText = result.response.text();
+    if (!responseText) {
+      throw new Error("Semua model Gemini gagal memproses permintaan.");
+    }
+
     let sanitizedText = responseText.trim();
     
     // Fallback pembersihan tag markdown jika ada
@@ -164,7 +179,7 @@ Pertahankan performa Anda atau coba tingkatkan kesulitan kuis Anda ke level beri
     console.log(`[PrepMaster API] Generating study guide for "${topic}" with ${incorrectQuestions.length} missed questions...`);
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.5-flash',
       systemInstruction: systemPromptStudyGuide
     });
 
