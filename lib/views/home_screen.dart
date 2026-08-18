@@ -189,18 +189,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               // Left Logo (q.png)
                               Image.asset(
                                 'assets/q.png',
-                                height: 36,
+                                height: 58,
                                 fit: BoxFit.contain,
                                 errorBuilder: (context, error, stackTrace) => Icon(
                                   Icons.auto_awesome,
                                   color: theme.primaryColor,
-                                  size: 28,
+                                  size: 36,
                                 ),
                               ),
                               // Right Logo (yu.png)
                               Image.asset(
                                 'assets/yu.png',
-                                height: 36,
+                                height: 58,
                                 fit: BoxFit.contain,
                                 errorBuilder: (context, error, stackTrace) => ShaderMask(
                                   shaderCallback: (bounds) => const LinearGradient(
@@ -209,7 +209,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   child: const Text(
                                     'quizyu',
                                     style: TextStyle(
-                                      fontSize: 22,
+                                      fontSize: 28,
                                       fontWeight: FontWeight.w900,
                                       color: Colors.white,
                                     ),
