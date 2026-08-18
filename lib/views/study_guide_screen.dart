@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/quiz_notifier.dart';
 import '../providers/study_guide_notifier.dart';
+import 'loading_screen.dart';
 
 class StudyGuideScreen extends ConsumerWidget {
   const StudyGuideScreen({super.key});
@@ -150,39 +151,16 @@ class StudyGuideScreen extends ConsumerWidget {
               ],
             );
           },
-          loading: () => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: CircularProgressIndicator(strokeWidth: 4),
-                ),
-                const SizedBox(height: 24),
-                ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFF7F5AF0), Color(0xFF9061F9)],
-                  ).createShader(bounds),
-                  child: const Text(
-                    'Menyusun Analisis Performa...',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Gemini sedang menganalisis kelemahan jawaban Anda.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
-              ],
-            ),
+          loading: () => const GorgeousLoadingScreen(
+            title: 'Menyusun Analisis Performa',
+            customMessages: [
+              'Menganalisis hasil jawaban Anda...',
+              'Mengidentifikasi konsep & materi kunci...',
+              'Menyusun pembahasan & petunjuk...',
+              'Merakit rekomendasi strategi belajar...',
+              'Hampir selesai, memformat analisis...'
+            ],
+            isScaffold: false,
           ),
           error: (error, stack) {
             final rawMsg = error.toString().replaceAll('Exception: ', '');
