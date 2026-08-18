@@ -181,79 +181,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Top header: logo q.png (top-left) and yu.png (top-right)
+                          // Top header: logo q.png (top-left) and yu.png (top-right) directly without border
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               // Left Logo (q.png)
-                              Container(
-                                height: 44,
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: theme.primaryColor.withValues(alpha: 0.15),
-                                    width: 1.2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: theme.primaryColor.withValues(alpha: 0.06),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    'assets/q.png',
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) => Icon(
-                                      Icons.auto_awesome,
-                                      color: theme.primaryColor,
-                                      size: 24,
-                                    ),
-                                  ),
+                              Image.asset(
+                                'assets/q.png',
+                                height: 36,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => Icon(
+                                  Icons.auto_awesome,
+                                  color: theme.primaryColor,
+                                  size: 28,
                                 ),
                               ),
                               // Right Logo (yu.png)
-                              Container(
-                                height: 44,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: theme.primaryColor.withValues(alpha: 0.15),
-                                    width: 1.2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: theme.primaryColor.withValues(alpha: 0.06),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    'assets/yu.png',
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) => ShaderMask(
-                                      shaderCallback: (bounds) => const LinearGradient(
-                                        colors: [Color(0xFF7F5AF0), Color(0xFF9061F9)],
-                                      ).createShader(bounds),
-                                      child: const Text(
-                                        'quizyu',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                              Image.asset(
+                                'assets/yu.png',
+                                height: 36,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => ShaderMask(
+                                  shaderCallback: (bounds) => const LinearGradient(
+                                    colors: [Color(0xFF7F5AF0), Color(0xFF9061F9)],
+                                  ).createShader(bounds),
+                                  child: const Text(
+                                    'quizyu',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
