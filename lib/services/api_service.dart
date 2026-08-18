@@ -74,9 +74,9 @@ class ApiService {
     }
 
     final String msg = e.response?.data?.toString() ?? e.message ?? 'Unknown error';
-    if (msg.contains('Connection refused')) {
-      debugPrint('🌐 [LOG TIDAK ADA KONEKSI INTERNET] Connection refused pada path ${e.requestOptions.path}');
-      return '[OFFLINE] Tidak ada koneksi internet / server backend tidak terjangkau.';
+    if (msg.contains('Connection refused') || msg.toLowerCase().contains('failed to connect')) {
+      debugPrint('🌐 [LOG SERVER BACKEND MATI] Koneksi ditolak pada path ${e.requestOptions.path}');
+      return '[OFFLINE] Server backend Express belum berjalan di port 3000. Pastikan server backend (npm start) sudah dinyalakan.';
     }
 
     if (msg.contains('429') || msg.contains('Quota exceeded') || msg.contains('Rate Limit')) {
