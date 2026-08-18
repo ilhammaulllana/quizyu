@@ -12,6 +12,6 @@ void main() {
     );
 
     // Verify that the landing page text is found.
-    expect(find.text('Sebaiknya kita mulai dari mana?'), findsOneWidget);
+    expect(find.text('Belajar Apa Hari Ini?'), findsOneWidget);
   });
 }
