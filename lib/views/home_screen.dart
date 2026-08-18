@@ -205,17 +205,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: theme.primaryColor.withValues(alpha: 0.1),
+                                  color: theme.primaryColor.withValues(
+                                    alpha: 0.1,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: theme.primaryColor.withValues(alpha: 0.2),
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     width: 1.5,
                                   ),
                                 ),
                                 child: Icon(
-                                  Icons.auto_awesome,
+                                  Icons.psychology_rounded,
                                   color: theme.primaryColor,
-                                  size: 20,
+                                  size: 22,
                                 ),
                               ),
                               // Logo Name on the right

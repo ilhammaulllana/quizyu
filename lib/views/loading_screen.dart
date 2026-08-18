@@ -122,9 +122,9 @@ class _GorgeousLoadingScreenState extends ConsumerState<GorgeousLoadingScreen>
                           ),
                           child: Center(
                             child: Icon(
-                              Icons.auto_awesome,
+                              Icons.psychology_rounded,
                               color: theme.primaryColor,
-                              size: 32,
+                              size: 36,
                             ),
                           ),
                         ),

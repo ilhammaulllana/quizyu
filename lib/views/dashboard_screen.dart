@@ -195,7 +195,7 @@ class DashboardScreen extends ConsumerWidget {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.auto_awesome, size: 20),
+                      Icon(Icons.psychology_rounded, size: 22),
                       SizedBox(width: 10),
                       Text(
                         'Analisis Performa Saya',
