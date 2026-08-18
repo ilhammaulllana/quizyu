@@ -179,17 +179,22 @@ app.post('/api/generate-quiz', async (req, res) => {
       });
     }
 
-    let sanitizedText = responseText.trim();
-    
-    // Fallback pembersihan tag markdown jika ada
-    if (sanitizedText.startsWith("```json")) {
-      sanitizedText = sanitizedText.substring(7);
+    let quizData;
+    try {
+      quizData = JSON.parse(sanitizedText.trim());
+    } catch (parseErr) {
+      console.warn('[PrepMaster API] Direct JSON.parse failed, cleaning trailing commas/control chars...', parseErr.message);
+      const cleanedJSON = sanitizedText
+        .trim()
+        .replace(/,\s*([\]}])/g, '$1')
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, (match) => {
+          if (match === '\n') return '\\n';
+          if (match === '\r') return '\\r';
+          if (match === '\t') return '\\t';
+          return '';
+        });
+      quizData = JSON.parse(cleanedJSON);
     }
-    if (sanitizedText.endsWith("```")) {
-      sanitizedText = sanitizedText.substring(0, sanitizedText.length - 3);
-    }
-
-    const quizData = JSON.parse(sanitizedText.trim());
     return res.json(quizData);
   } catch (error) {
     console.error('[PrepMaster API] Error generating quiz:', error);
