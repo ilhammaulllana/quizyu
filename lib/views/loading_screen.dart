@@ -121,16 +121,10 @@ class _GorgeousLoadingScreenState extends ConsumerState<GorgeousLoadingScreen>
                             ),
                           ),
                           child: Center(
-                            child: Image.asset(
-                              'assets/q.png',
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) => Icon(
-                                Icons.auto_awesome,
-                                color: theme.primaryColor,
-                                size: 32,
-                              ),
+                            child: Icon(
+                              Icons.auto_awesome,
+                              color: theme.primaryColor,
+                              size: 32,
                             ),
                           ),
                         ),

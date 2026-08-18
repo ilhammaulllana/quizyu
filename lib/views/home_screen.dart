@@ -47,15 +47,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final settings = ref.read(settingsProvider);
 
-    // Parse potential question count from prompt, e.g., "buat soal pseudecode 20", "20 soal pseudocode", "pseudocode 20"
+    // Parse potential question count from prompt.
+    // Examples:
+    // "buat soal pseudocode 20"
+    // "20 soal pseudocode"
+    // "pseudocode 20"
     int count = settings.questionCount;
-    final numMatch1 = RegExp(r'(\d+)\s*(?:soal|pertanyaan|items?|buah)', caseSensitive: false).firstMatch(query);
-    final numMatch2 = RegExp(r'(?:soal|pertanyaan|items?|buah)\s+.*?\s*(\d+)', caseSensitive: false).firstMatch(query);
+
+    final numMatch1 = RegExp(
+      r'(\d+)\s*(?:soal|pertanyaan|items?|buah)',
+      caseSensitive: false,
+    ).firstMatch(query);
+
+    final numMatch2 = RegExp(
+      r'(?:soal|pertanyaan|items?|buah)\s+.*?\s*(\d+)',
+      caseSensitive: false,
+    ).firstMatch(query);
+
     final numMatch3 = RegExp(r'\b(\d+)\b').firstMatch(query);
 
-    final String? foundNum = numMatch1?.group(1) ?? numMatch2?.group(1) ?? numMatch3?.group(1);
+    final String? foundNum =
+        numMatch1?.group(1) ?? numMatch2?.group(1) ?? numMatch3?.group(1);
+
     if (foundNum != null) {
       final parsed = int.tryParse(foundNum);
+
       if (parsed != null && parsed >= 1 && parsed <= 30) {
         count = parsed;
       }
@@ -81,16 +97,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       next.whenOrNull(
         error: (error, stackTrace) {
           final rawMsg = error.toString().replaceAll('Exception: ', '');
-          final isOffline = rawMsg.contains('[OFFLINE]') ||
+
+          final isOffline =
+              rawMsg.contains('[OFFLINE]') ||
               rawMsg.toLowerCase().contains('tidak ada koneksi') ||
               rawMsg.toLowerCase().contains('periksa jaringan') ||
               rawMsg.toLowerCase().contains('jaringan terputus');
-          final isQuota = !isOffline && (
-              rawMsg.contains('[QUOTA_EXCEEDED]') ||
-              rawMsg.toLowerCase().contains('rate limit') ||
-              rawMsg.toLowerCase().contains('429') ||
-              rawMsg.toLowerCase().contains('kuota')
-          );
+
+          final isQuota =
+              !isOffline &&
+              (rawMsg.contains('[QUOTA_EXCEEDED]') ||
+                  rawMsg.toLowerCase().contains('rate limit') ||
+                  rawMsg.toLowerCase().contains('429') ||
+                  rawMsg.toLowerCase().contains('kuota'));
 
           final displayMsg = rawMsg
               .replaceAll('[OFFLINE] ', '')
@@ -113,8 +132,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     isOffline
                         ? Icons.wifi_off_rounded
                         : isQuota
-                            ? Icons.hourglass_top_rounded
-                            : Icons.error_outline_rounded,
+                        ? Icons.hourglass_top_rounded
+                        : Icons.error_outline_rounded,
                     color: Colors.white,
                   ),
                   const SizedBox(width: 12),
@@ -129,8 +148,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               backgroundColor: isOffline
                   ? const Color(0xFFD97706)
                   : isQuota
-                      ? const Color(0xFF7F5AF0)
-                      : theme.colorScheme.error,
+                  ? const Color(0xFF7F5AF0)
+                  : theme.colorScheme.error,
               behavior: SnackBarBehavior.floating,
               duration: const Duration(seconds: 5),
               shape: RoundedRectangleBorder(
@@ -158,10 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           gradient: RadialGradient(
             center: Alignment.center,
             radius: 1.0,
-            colors: [
-              Color(0xFFEBF5FF), // Subtle blue in the center
-              Colors.white, // Pure white at the edges
-            ],
+            colors: [Color(0xFFEBF5FF), Colors.white],
             stops: [0.0, 0.8],
           ),
         ),
@@ -181,50 +197,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Top header: logo q.png (top-left) and yu.png (top-right) directly without border
+                          // Top header: logo icon (top-left) and name (top-right)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Left Logo (q.png)
-                              Image.asset(
-                                'assets/q.png',
-                                height: 58,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) => Icon(
+                              // Logo Icon on the left
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: theme.primaryColor.withValues(alpha: 0.2),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Icon(
                                   Icons.auto_awesome,
                                   color: theme.primaryColor,
-                                  size: 36,
+                                  size: 20,
                                 ),
                               ),
-                              // Right Logo (yu.png)
-                              Image.asset(
-                                'assets/yu.png',
-                                height: 58,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) => ShaderMask(
-                                  shaderCallback: (bounds) => const LinearGradient(
-                                    colors: [Color(0xFF7F5AF0), Color(0xFF9061F9)],
-                                  ).createShader(bounds),
-                                  child: const Text(
-                                    'quizyu',
-                                    style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white,
-                                    ),
+                              // Logo Name on the right
+                              ShaderMask(
+                                shaderCallback: (bounds) =>
+                                    const LinearGradient(
+                                      colors: [
+                                        Color(0xFF7F5AF0),
+                                        Color(0xFF9061F9),
+                                      ],
+                                    ).createShader(bounds),
+                                child: const Text(
+                                  'quizyu',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                    letterSpacing: 1.0,
                                   ),
                                 ),
                               ),
                             ],
                           ),
 
-                          // Centered Content
+                          // ===================================================
+                          // CENTER CONTENT
+                          // ===================================================
                           Expanded(
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
-                                // Glowing blue gradient orb behind the objects
+                                // Glowing blue gradient orb
                                 Container(
                                   width: 360,
                                   height: 360,
@@ -232,9 +255,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        const Color(0xFF60A5FA).withValues(
-                                          alpha: 0.24,
-                                        ), // Soft blue center glow
+                                        const Color(
+                                          0xFF60A5FA,
+                                        ).withValues(alpha: 0.24),
                                         const Color(
                                           0xFF93C5FD,
                                         ).withValues(alpha: 0.06),
@@ -244,28 +267,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                                // Main elements Column
+
+                                // Main Content
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // Header main greeting text
+                                    // ===================================================
+                                    // TITLE
+                                    // ===================================================
                                     const Text(
                                       'Sebaiknya kita mulai dari mana?',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(
-                                          0xFF0F172A,
-                                        ), // Dark slate gray for readability
+                                        color: Color(0xFF0F172A),
                                         letterSpacing: -0.5,
                                         height: 1.2,
                                       ),
                                     ),
+
                                     const SizedBox(height: 48),
 
-                                    // Premium search bar container
+                                    // ===================================================
+                                    // SEARCH BAR
+                                    // ===================================================
                                     Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
@@ -297,11 +324,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           ),
                                           fillColor: Colors.white,
                                           filled: true,
+
+                                          // Search Icon
                                           prefixIcon: const Icon(
                                             Icons.search_rounded,
                                             color: Color(0xFF7F5AF0),
                                             size: 24,
                                           ),
+
+                                          // Submit Button
                                           suffixIcon: IconButton(
                                             icon: Container(
                                               padding: const EdgeInsets.all(6),
@@ -319,6 +350,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               _searchController.text,
                                             ),
                                           ),
+
+                                          // Normal Border
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(
                                               16,
@@ -328,6 +361,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               width: 1.5,
                                             ),
                                           ),
+
+                                          // Focus Border
                                           focusedBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(
                                               16,
@@ -337,6 +372,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               width: 2,
                                             ),
                                           ),
+
                                           contentPadding:
                                               const EdgeInsets.symmetric(
                                                 horizontal: 20,
@@ -345,15 +381,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ),
                                       ),
                                     ),
+
                                     const SizedBox(height: 24),
 
-                                    // Dropdown model switcher (Standard vs Pro pills)
+                                    // ===================================================
+                                    // MODEL SWITCHER
+                                    // ===================================================
                                     Container(
                                       padding: const EdgeInsets.all(4),
                                       decoration: BoxDecoration(
-                                        color: const Color(
-                                          0xFFF1F5F9,
-                                        ), // Light grey panel
+                                        color: const Color(0xFFF1F5F9),
                                         borderRadius: BorderRadius.circular(14),
                                         border: Border.all(
                                           color: const Color(0xFFE2E8F0),
@@ -363,6 +400,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
+                                          // Gemini Standard
                                           _buildModelPill(
                                             label: 'Gemini Standard',
                                             isSelected:
@@ -380,7 +418,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                   .setModelVersion('Standard');
                                             },
                                           ),
+
                                           const SizedBox(width: 4),
+
+                                          // Gemini Pro
                                           _buildModelPill(
                                             label: 'Gemini Pro',
                                             isSelected:
@@ -406,7 +447,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
 
-                          // Spacer to balance the top logo header height so the content is perfectly centered
+                          // Bottom spacer
                           const SizedBox(height: 48),
                         ],
                       ),
@@ -421,6 +462,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  // ===================================================
+  // MODEL PILL
+  // ===================================================
   Widget _buildModelPill({
     required String label,
     required bool isSelected,
