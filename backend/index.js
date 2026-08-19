@@ -179,6 +179,18 @@ app.post('/api/generate-quiz', async (req, res) => {
       });
     }
 
+    let sanitizedText = responseText.trim();
+    
+    // Fallback pembersihan tag markdown jika ada
+    if (sanitizedText.startsWith("```json")) {
+      sanitizedText = sanitizedText.substring(7);
+    } else if (sanitizedText.startsWith("```")) {
+      sanitizedText = sanitizedText.substring(3);
+    }
+    if (sanitizedText.endsWith("```")) {
+      sanitizedText = sanitizedText.substring(0, sanitizedText.length - 3);
+    }
+
     let quizData;
     try {
       quizData = JSON.parse(sanitizedText.trim());
