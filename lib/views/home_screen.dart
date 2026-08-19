@@ -217,9 +217,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                 ),
                                 child: Icon(
-                                  Icons.psychology_rounded,
+                                  Icons.auto_awesome,
                                   color: theme.primaryColor,
-                                  size: 22,
+                                  size: 20,
                                 ),
                               ),
                               // Logo Name on the right
@@ -281,7 +281,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     // TITLE
                                     // ===================================================
                                     const Text(
-                                      'Sebaiknya kita mulai dari mana?',
+                                      'Belajar Apa Hari Ini?',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 28,
@@ -435,11 +435,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               0xFF8B5CF6,
                                             ),
                                             onTap: () {
-                                              ref
-                                                  .read(
-                                                    settingsProvider.notifier,
-                                                  )
-                                                  .setModelVersion('Pro');
+                                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: const Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.stars_rounded,
+                                                        color: Colors.white,
+                                                      ),
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Fitur Gemini Pro belum tersedia saat ini.',
+                                                          style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  backgroundColor: const Color(0xFF8B5CF6),
+                                                  behavior: SnackBarBehavior.floating,
+                                                  duration: const Duration(seconds: 3),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  margin: const EdgeInsets.all(16),
+                                                ),
+                                              );
                                             },
                                           ),
                                         ],
