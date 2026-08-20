@@ -74,6 +74,11 @@ class ApiService {
     }
 
     final String msg = e.response?.data?.toString() ?? e.message ?? 'Unknown error';
+
+    if (msg.contains('[OFFLINE]') || msg.contains('[QUOTA_EXCEEDED]') || msg.contains('[SYSTEM_ERROR]')) {
+      return msg;
+    }
+
     if (msg.contains('Connection refused') || msg.toLowerCase().contains('failed to connect')) {
       debugPrint('🌐 [LOG SERVER BACKEND MATI] Koneksi ditolak pada path ${e.requestOptions.path}');
       return '[OFFLINE] Server backend Express belum berjalan di port 3000. Pastikan server backend (npm start) sudah dinyalakan.';

@@ -19,19 +19,25 @@ if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
 // Inisialisasi Google Generative AI
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || "");
 
-// Helper untuk mengecek apakah kesalahan disebabkan oleh masalah koneksi internet/jaringan
+// Helper untuk mengecek apakah kesalahan disebabkan oleh masalah koneksi internet/jaringan secara fisik
 function isNetworkError(err) {
   if (!err) return false;
   const msg = (err.message || err.toString() || '').toLowerCase();
+  const code = (err.code || '').toLowerCase();
+
+  // Exclude SDK/API validation or key errors
+  if (msg.includes('api key') || msg.includes('bad request') || msg.includes('invalid') || msg.includes('400') || msg.includes('403')) {
+    return false;
+  }
+
   return (
-    msg.includes('fetch failed') ||
-    msg.includes('enotfound') ||
-    msg.includes('enetunreach') ||
-    msg.includes('etimedout') ||
-    msg.includes('econnrefused') ||
-    msg.includes('getaddrinfo') ||
-    msg.includes('network') ||
-    msg.includes('socket')
+    code === 'enotfound' ||
+    code === 'enetunreach' ||
+    code === 'econnrefused' ||
+    code === 'etimedout' ||
+    msg.includes('getaddrinfo enotfound') ||
+    msg.includes('connect enetunreach') ||
+    msg.includes('connect econnrefused')
   );
 }
 
